@@ -20,5 +20,6 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           dokku-host: 'planner.thermokar.st'
           app-name: 'webapp'
+          remote-branch: 'main'
           # Keeping the following around, in case of emergencies:
           # git-push-flags: --force
