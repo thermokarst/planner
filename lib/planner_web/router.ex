@@ -37,8 +37,6 @@ defmodule PlannerWeb.Router do
     end
   end
 
-  ## Authentication routes
-
   scope "/", PlannerWeb do
     pipe_through([:browser, :redirect_if_user_is_authenticated])
 
