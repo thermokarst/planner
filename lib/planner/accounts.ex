@@ -73,30 +73,13 @@ defmodule Planner.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
+
   def register_user(attrs) do
     %User{}
     |> User.registration_changeset(attrs)
-    |> Repo.insert()
-  end
-
-  def register_and_confirm_user(attrs) do
-    %User{}
-    |> User.registration_changeset(attrs)
+    # Inline the confirmation, for now (MRD)
     |> User.confirm_changeset()
     |> Repo.insert()
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
-
-  ## Examples
-
-      iex> change_user_registration(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  def change_user_registration(%User{} = user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs)
   end
 
   ## Settings

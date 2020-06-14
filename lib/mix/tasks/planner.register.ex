@@ -8,7 +8,7 @@ defmodule Mix.Tasks.Planner.Register do
   def run([email, password]) do
     Mix.Task.run("app.start")
 
-    case Accounts.register_and_confirm_user(%{email: email, password: password}) do
+    case Accounts.register_user(%{email: email, password: password}) do
       {:ok, _} ->
         Mix.shell().info("User created successfully.")
 

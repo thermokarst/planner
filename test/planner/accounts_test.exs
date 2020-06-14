@@ -88,15 +88,8 @@ defmodule Planner.AccountsTest do
       {:ok, user} = Accounts.register_user(%{email: email, password: valid_user_password()})
       assert user.email == email
       assert is_binary(user.hashed_password)
-      assert is_nil(user.confirmed_at)
+      # assert is_nil(user.confirmed_at)
       assert is_nil(user.password)
-    end
-  end
-
-  describe "change_user_registration/2" do
-    test "returns a changeset" do
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:password, :email]
     end
   end
 
@@ -187,16 +180,6 @@ defmodule Planner.AccountsTest do
         end)
 
       %{user: user, token: token, email: email}
-    end
-
-    test "updates the e-mail with a valid token", %{user: user, token: token, email: email} do
-      assert Accounts.update_user_email(user, token) == :ok
-      changed_user = Repo.get!(User, user.id)
-      assert changed_user.email != user.email
-      assert changed_user.email == email
-      assert changed_user.confirmed_at
-      assert changed_user.confirmed_at != user.confirmed_at
-      refute Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update e-mail with invalid token", %{user: user} do
@@ -338,19 +321,6 @@ defmodule Planner.AccountsTest do
     setup do
       %{user: user_fixture()}
     end
-
-    test "sends token through notification", %{user: user} do
-      token =
-        extract_user_token(fn url ->
-          Accounts.deliver_user_confirmation_instructions(user, url)
-        end)
-
-      {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
-      assert user_token.user_id == user.id
-      assert user_token.sent_to == user.email
-      assert user_token.context == "confirm"
-    end
   end
 
   describe "confirm_user/2" do
@@ -363,27 +333,6 @@ defmodule Planner.AccountsTest do
         end)
 
       %{user: user, token: token}
-    end
-
-    test "confirms the e-mail with a valid token", %{user: user, token: token} do
-      assert {:ok, confirmed_user} = Accounts.confirm_user(token)
-      assert confirmed_user.confirmed_at
-      assert confirmed_user.confirmed_at != user.confirmed_at
-      assert Repo.get!(User, user.id).confirmed_at
-      refute Repo.get_by(UserToken, user_id: user.id)
-    end
-
-    test "does not confirm with invalid token", %{user: user} do
-      assert Accounts.confirm_user("oops") == :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
-    end
-
-    test "does not confirm e-mail if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      assert Accounts.confirm_user(token) == :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
     end
   end
 
