@@ -6,7 +6,8 @@ defmodule PlannerWeb.Router do
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
-    plug(:fetch_flash)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, {PlannerWeb.LayoutView, :root})
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(:fetch_current_user)
@@ -51,7 +52,7 @@ defmodule PlannerWeb.Router do
   scope "/", PlannerWeb do
     pipe_through([:browser, :require_authenticated_user])
 
-    get("/", PageController, :index)
+    live("/", LandingLive, :index)
 
     get("/users/settings", UserSettingsController, :edit)
     put("/users/settings/update_password", UserSettingsController, :update_password)
