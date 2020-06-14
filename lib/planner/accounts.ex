@@ -79,6 +79,13 @@ defmodule Planner.Accounts do
     |> Repo.insert()
   end
 
+  def register_and_confirm_user(attrs) do
+    %User{}
+    |> User.registration_changeset(attrs)
+    |> User.confirm_changeset()
+    |> Repo.insert()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking user changes.
 
