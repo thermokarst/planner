@@ -28,4 +28,4 @@ liveSocket.connect()
 // The latency simulator is enabled for the duration of the browser session.
 // Call disableLatencySim() to disable:
 // >> liveSocket.disableLatencySim()
-window.liveSocket = liveSocket
+// window.liveSocket = liveSocket
