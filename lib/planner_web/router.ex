@@ -16,12 +16,6 @@ defmodule PlannerWeb.Router do
     plug(:accepts, ["json"])
   end
 
-  scope "/", PlannerWeb do
-    pipe_through(:browser)
-
-    get("/", PageController, :index)
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", PlannerWeb do
   #   pipe_through :api
@@ -48,8 +42,6 @@ defmodule PlannerWeb.Router do
   scope "/", PlannerWeb do
     pipe_through([:browser, :redirect_if_user_is_authenticated])
 
-    get("/users/register", UserRegistrationController, :new)
-    post("/users/register", UserRegistrationController, :create)
     get("/users/login", UserSessionController, :new)
     post("/users/login", UserSessionController, :create)
     get("/users/reset_password", UserResetPasswordController, :new)
@@ -61,6 +53,8 @@ defmodule PlannerWeb.Router do
   scope "/", PlannerWeb do
     pipe_through([:browser, :require_authenticated_user])
 
+    get("/", PageController, :index)
+
     get("/users/settings", UserSettingsController, :edit)
     put("/users/settings/update_password", UserSettingsController, :update_password)
     put("/users/settings/update_email", UserSettingsController, :update_email)
@@ -71,8 +65,5 @@ defmodule PlannerWeb.Router do
     pipe_through([:browser])
 
     delete("/users/logout", UserSessionController, :delete)
-    get("/users/confirm", UserConfirmationController, :new)
-    post("/users/confirm", UserConfirmationController, :create)
-    get("/users/confirm/:token", UserConfirmationController, :confirm)
   end
 end
