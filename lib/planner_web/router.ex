@@ -51,7 +51,7 @@ defmodule PlannerWeb.Router do
   scope "/", PlannerWeb do
     pipe_through([:browser, :require_authenticated_user])
 
-    get("/", PageController, :index)
+    live("/", LandingLive)
 
     get("/users/settings", UserSettingsController, :edit)
     put("/users/settings/update_password", UserSettingsController, :update_password)
