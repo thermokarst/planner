@@ -10,7 +10,7 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :planner, PlannerWeb.Endpoint,
-  url: [port: 5000],
+  url: [host: "planner.thermokar.st", port: 5000],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
