@@ -9,11 +9,9 @@
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>
-    <nav class="navbar" role="navigation">
+    <nav class="navbar is-dark" role="navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-          planner
-        </a>
+        <%= link "planner", to: Routes.landing_path(@conn, :index), class: "navbar-item has-text-weight-bold hast-text-info-light" %>
 
         <a role="button" class="navbar-burger burger" data-target="nvbr">
           <span></span>
@@ -24,22 +22,11 @@
 
       <div id="nvbr" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item">
-            tasks
-          </a>
-          <a class="navbar-item">
-            placeholder
-          </a>
-       </div>
+          <%= link "tasks", to: Routes.landing_path(@conn, :index), class: "navbar-item" %>
+        </div>
 
         <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="buttons">
-              <a class="button is-light">
-                log out
-              </a>
-            </div>
-          </div>
+          <%= link "log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "navbar-item" %>
         </div>
       </div>
     </nav>
