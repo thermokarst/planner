@@ -54,6 +54,8 @@ defmodule PlannerWeb.Router do
 
     live("/", LandingLive, :index)
 
+    resources("/tasks", TaskController)
+
     get("/users/settings", UserSettingsController, :edit)
     put("/users/settings/update_password", UserSettingsController, :update_password)
     put("/users/settings/update_email", UserSettingsController, :update_email)

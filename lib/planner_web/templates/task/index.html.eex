@@ -1,0 +1,24 @@
+<div class="columns">
+  <div class="column is-three-fifths is-offset-one-fifth">
+    <table class="table is-striped is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>task</th>
+          <th>due at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for task <- @tasks do %>
+          <tr>
+            <td>
+              <%= link to: Routes.task_path(@conn, :show, task.id), class: "has-text-black" do %>
+                <%= task.value %>
+              <% end %>
+            </td>
+            <td><%= task.due_at %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

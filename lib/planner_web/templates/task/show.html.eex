@@ -1,0 +1,21 @@
+<br>
+<div class="columns">
+  <div class="column is-three-fifths is-offset-one-fifth">
+    <article class="message">
+      <div class="message-header">
+        <p>task detail</p>
+        <%= link to: Routes.task_path(@conn, :index) do %>
+          <button class="delete"></button>
+        <% end %>
+      </div>
+      <div class="message-body columns">
+        <div class="column is-three-quarters">
+          <%= @task.value %>
+        </div>
+        <div class="column">
+          TODO: filed, finished, due, created, updated
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
