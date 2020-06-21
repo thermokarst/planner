@@ -19,12 +19,28 @@ defmodule Planner.Tasks do
     |> Repo.all()
   end
 
+  def list_finished_tasks do
+    from(
+      t in Task,
+      where: not is_nil(t.finished_at)
+    )
+    |> Repo.all()
+  end
+
   def change_task(%Task{} = task) do
     task
     |> Task.changeset(%{})
   end
 
   def update_task(%Task{} = task, attrs) do
+    attrs =
+      attrs
+      |> Map.update("finished_at", nil, fn
+        "true" -> NaiveDateTime.utc_now()
+        "false" -> nil
+        val -> val
+      end)
+
     task
     |> Task.changeset(attrs)
     |> Repo.update()

@@ -1,45 +1,31 @@
 <div class="columns">
   <div class="column is-three-fifths is-offset-one-fifth">
     <div class="box">
+
+      <%= if not is_nil(@task.due_at) or is_nil(@task.filed_at) do %>
+        <div class="tags">
+          <%= if not is_nil(@task.due_at) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
+          <%= if is_nil(@task.filed_at) do %><span class="tag is-danger">unfiled</span><% end %>
+        </div>
+      <% end %>
+
       <p class="mb-5">
         <%= @task.value %>
       </p>
 
-      <table class="table is-bordered is-fullwidth">
-        <tbody>
-            <tr>
-              <th>filed</th>
-              <td>
-                <%= if is_nil(@task.filed_at) do %>
-                  no
-                <% else %>
-                  yes (<%= @task.filed_at %>)
-                <% end %>
-              </td>
-            </tr>
-            <tr>
-              <th>due</th>
-              <td><%= @task.due_at %></td>
-            </tr>
-            <tr>
-              <th>updated</th>
-              <td><%= @task.updated_at %></td>
-            </tr>
-            <tr>
-              <th>created</th>
-              <td><%= @task.inserted_at %></td>
-            </tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="tags">
+        <span class="tag is-light">updated: <%= @task.updated_at %></span>
+        <span class="tag is-light">created: <%= @task.inserted_at %></span>
+      </div>
 
-    <div class="field is-grouped">
-      <p class="control">
-        <%= link "edit", to: Routes.task_path(@conn, :edit, @task.id), class: "button is-dark" %>
-      </p>
-      <p class="control">
-        <button class="button is-dark">delete</button>
-      </p>
+      <div class="field is-grouped">
+        <p class="control">
+          <%= link "edit", to: Routes.task_path(@conn, :edit, @task.id), class: "button is-dark" %>
+        </p>
+        <p class="control">
+          <button class="button is-dark">delete</button>
+        </p>
+      </div>
     </div>
   </div>
 </div>

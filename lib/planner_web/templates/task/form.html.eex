@@ -24,9 +24,14 @@
     </div>
 
     <div class="field">
+      <%= @task.finished_at %>
       <%= label f, :finished_at, class: "label" do %>
+        <%= if is_nil(@task.finished_at) do %>
+          <%= checkbox f, :finished_at %>
+        <% else %>
+          <%= checkbox f, :finished_at, checked_value: @task.finished_at %>
+        <% end %>
         finished
-        <%= checkbox f, :finished_at %>
       <% end %>
       <%= error_tag f, :finished_at %>
     </div>

@@ -1,11 +1,10 @@
 <div class="columns">
   <div class="column table-container">
-    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+    <table class="table is-striped is-hoverable is-fullwidth" style="table-layout: fixed;">
       <thead>
         <tr>
-          <th></th>
+          <th style="width: 3em;"></th>
           <th>task</th>
-          <th style="white-space: nowrap;">due at</th>
         </tr>
       </thead>
       <tbody>
@@ -19,11 +18,17 @@
               <% end %>
             </td>
             <td>
+              <%= if not is_nil(task.due_at) do %>
+                <div class="tags mb-0">
+                  <span class="tag is-warning">
+                    due: <%= task.due_at %>
+                  </span>
+                </div>
+              <% end %>
               <%= link to: Routes.task_path(@conn, :show, task.id), class: "has-text-black" do %>
                 <%= task.value %>
               <% end %>
             </td>
-            <td style="white-space: nowrap;"><%= task.due_at %></td>
           </tr>
         <% end %>
       </tbody>
