@@ -1,31 +1,26 @@
-<div class="columns">
-  <div class="column is-three-fifths is-offset-one-fifth">
-    <div class="box">
-
-      <%= if not is_nil(@task.due_at) or is_nil(@task.filed_at) do %>
-        <div class="tags">
-          <%= if not is_nil(@task.due_at) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
-          <%= if is_nil(@task.filed_at) do %><span class="tag is-danger">unfiled</span><% end %>
-        </div>
-      <% end %>
-
-      <p class="mb-5">
-        <%= @task.value %>
-      </p>
-
-      <div class="tags">
-        <span class="tag is-light">updated: <%= @task.updated_at %></span>
-        <span class="tag is-light">created: <%= @task.inserted_at %></span>
-      </div>
-
-      <div class="field is-grouped">
-        <p class="control">
-          <%= link "edit", to: Routes.task_path(@conn, :edit, @task.id), class: "button is-dark" %>
-        </p>
-        <p class="control">
-          <%= link "delete", to: Routes.task_path(@conn, :delete, @task.id), class: "button is-dark", method: :delete, data: [confirm: "are you sure?"] %>
-        </p>
-      </div>
+<div class="box">
+  <%= if not is_nil(@task.due_at) or is_nil(@task.filed_at) do %>
+    <div class="tags">
+      <%= if not is_nil(@task.due_at) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
+      <%= if is_nil(@task.filed_at) do %><span class="tag is-danger">unfiled</span><% end %>
     </div>
+  <% end %>
+
+  <p class="mb-5">
+    <%= @task.value %>
+  </p>
+
+  <div class="tags">
+    <span class="tag is-light">updated: <%= @task.updated_at %></span>
+    <span class="tag is-light">created: <%= @task.inserted_at %></span>
+  </div>
+
+  <div class="field is-grouped">
+    <p class="control">
+      <%= link "edit", to: Routes.task_path(@conn, :edit, @task.id), class: "button is-dark" %>
+    </p>
+    <p class="control">
+      <%= link "delete", to: Routes.task_path(@conn, :delete, @task.id), class: "button is-dark", method: :delete, data: [confirm: "are you sure?"] %>
+    </p>
   </div>
 </div>
