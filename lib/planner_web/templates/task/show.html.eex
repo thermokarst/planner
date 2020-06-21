@@ -23,7 +23,7 @@
           <%= link "edit", to: Routes.task_path(@conn, :edit, @task.id), class: "button is-dark" %>
         </p>
         <p class="control">
-          <button class="button is-dark">delete</button>
+          <%= link "delete", to: Routes.task_path(@conn, :delete, @task.id), class: "button is-dark", method: :delete, data: [confirm: "are you sure?"] %>
         </p>
       </div>
     </div>

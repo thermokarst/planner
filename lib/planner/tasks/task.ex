@@ -16,8 +16,7 @@ defmodule Planner.Tasks.Task do
   @doc false
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:value, :filed_at, :due_at])
-    |> cast(attrs, [:finished_at])
+    |> cast(attrs, [:value, :filed_at, :finished_at, :due_at])
     |> validate_required([:value])
     |> validate_length(:value, min: 3)
   end
