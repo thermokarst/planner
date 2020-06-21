@@ -9,7 +9,7 @@
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>
-    <nav class="navbar is-dark" role="navigation">
+    <nav class="navbar is-dark mb-5" role="navigation">
       <div class="navbar-brand">
         <%= link "planner", to: Routes.landing_path(@conn, :index), class: "navbar-item has-text-weight-bold hast-text-info-light" %>
 
@@ -22,7 +22,7 @@
 
       <div id="nvbr" class="navbar-menu">
         <div class="navbar-start">
-          <%= link "tasks", to: Routes.landing_path(@conn, :index), class: "navbar-item" %>
+          <%= link "tasks", to: Routes.task_path(@conn, :index), class: "navbar-item" %>
         </div>
 
         <div class="navbar-end">
