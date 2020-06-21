@@ -10,46 +10,41 @@
           <%= @task.value %>
         </p>
 
-        <div class="field is-grouped is-grouped-multiline">
-          <div class="control">
-            <div class="tags has-addons">
-              <span class="tag is-dark">filed</span>
-              <%= if is_nil(@task.filed_at) do %>
-                <span class="tag is-warning">no</span>
-              <% else %>
-                <span class="tag is-success">yes</span>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <%= if not is_nil(@task.due_at) do %>
-          <div class="field is-grouped is-grouped-multiline">
-            <div class="control">
-              <div class="tags has-addons">
-                <span class="tag is-dark">due</span>
-                <span class="tag is-danger"><%= @task.due_at %></span>
-              </div>
-            </div>
-          </div>
-        <% end %>
-
-        <div class="field is-grouped is-grouped-multiline">
-          <div class="control">
-            <div class="tags has-addons">
-              <span class="tag is-dark">created</span>
-              <span class="tag is-info"><%= @task.inserted_at %></span>
-            </div>
-          </div>
-
-          <div class="control">
-            <div class="tags has-addons">
-              <span class="tag is-dark">updated</span>
-              <span class="tag is-info"><%= @task.updated_at %></span>
-            </div>
-          </div>
-        </div>
+        <table class="table is-bordered is-fullwidth">
+          <tbody>
+              <tr>
+                <th>filed</th>
+                <td>
+                  <%= if is_nil(@task.filed_at) do %>
+                    no
+                  <% else %>
+                    yes (<%= @task.filed_at %>)
+                  <% end %>
+                </td>
+              </tr>
+              <tr>
+                <th>due</th>
+                <td><%= @task.due_at %></td>
+              </tr>
+              <tr>
+                <th>updated</th>
+                <td><%= @task.updated_at %></td>
+              </tr>
+              <tr>
+                <th>created</th>
+                <td><%= @task.inserted_at %></td>
+              </tr>
+          </tbody>
+        </table>
       </div>
     </article>
+    <div class="field is-grouped">
+      <p class="control">
+        <%= link "edit", to: Routes.task_path(@conn, :edit, @task.id), class: "button is-dark" %>
+      </p>
+      <p class="control">
+        <button class="button is-dark">delete</button>
+      </p>
+    </div>
   </div>
 </div>

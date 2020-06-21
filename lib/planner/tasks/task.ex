@@ -15,8 +15,16 @@ defmodule Planner.Tasks.Task do
 
   @doc false
   def changeset(task, attrs) do
+    attrs =
+      attrs
+      |> Map.update("finished_at", nil, fn
+        "true" -> NaiveDateTime.utc_now()
+        _ -> nil
+      end)
+
     task
-    |> cast(attrs, [:value, :filed_at, :finished_at, :due_at])
+    |> cast(attrs, [:value, :filed_at, :due_at])
+    |> cast(attrs, [:finished_at])
     |> validate_required([:value])
     |> validate_length(:value, min: 3)
   end

@@ -1,0 +1,6 @@
+<div class="columns">
+  <div class="column is-three-fifths is-offset-one-fifth">
+    <h3 class="title is-3">edit task</h3>
+    <%= render "form.html", Map.put(assigns, :action, Routes.task_path(@conn, :update, @task)) %>
+  </div>
+</div>
