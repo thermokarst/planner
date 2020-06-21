@@ -1,37 +1,38 @@
-<h4 class="title is-4">id: <%= @task.id %></h4>
-<%= form_for @changeset, @action, fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="help is-danger">
-      <p>something went wrong: Please check the errors below.</p>
+<div class="box">
+  <%= form_for @changeset, @action, fn f -> %>
+    <%= if @changeset.action do %>
+      <div class="help is-danger">
+        <p>something went wrong (see below)</p>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <div class="control">
+        <%= textarea f, :value, required: true, class: "textarea", placeholder: "task" %>
+      </div>
+      <%= error_tag f, :value %>
+    </div>
+
+    <div class="field">
+      <%= label f, :due_at, class: "label" do %>
+        due (YYYY-MM-DD HH:MM:SS)
+      <% end %>
+      <div class="control">
+        <%= text_input f, :due_at, class: "input", placeholder: "YYYY-MM-DD HH:MM:SS" %>
+      </div>
+      <%= error_tag f, :due_at %>
+    </div>
+
+    <div class="field">
+      <%= label f, :finished_at, class: "label" do %>
+        finished
+        <%= checkbox f, :finished_at %>
+      <% end %>
+      <%= error_tag f, :finished_at %>
+    </div>
+
+    <div class="control">
+      <%= submit "save", class: "button is-dark" %>
     </div>
   <% end %>
-
-  <div class="field">
-    <div class="control">
-      <%= textarea f, :value, required: true, class: "textarea", placeholder: "task" %>
-    </div>
-    <%= error_tag f, :value %>
-  </div>
-
-  <div class="field">
-    <%= label f, :due_at, class: "label" do %>
-      due (YYYY-MM-DD HH:MM:SS)
-    <% end %>
-    <div class="control">
-      <%= text_input f, :due_at, class: "input", placeholder: "YYYY-MM-DD HH:MM:SS" %>
-    </div>
-    <%= error_tag f, :due_at %>
-  </div>
-
-  <div class="field">
-    <%= label f, :finished_at, class: "label" do %>
-      finished
-      <%= checkbox f, :finished_at %>
-    <% end %>
-    <%= error_tag f, :finished_at %>
-  </div>
-
-  <div class="control">
-    <%= submit "save", class: "button is-dark" %>
-  </div>
-<% end %>
+</div>

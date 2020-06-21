@@ -1,43 +1,38 @@
-<br>
 <div class="columns">
   <div class="column is-three-fifths is-offset-one-fifth">
-    <article class="message">
-      <div class="message-header">
-        <p>task detail</p>
-      </div>
-      <div class="message-body">
-        <p class="mb-5">
-          <%= @task.value %>
-        </p>
+    <div class="box">
+      <p class="mb-5">
+        <%= @task.value %>
+      </p>
 
-        <table class="table is-bordered is-fullwidth">
-          <tbody>
-              <tr>
-                <th>filed</th>
-                <td>
-                  <%= if is_nil(@task.filed_at) do %>
-                    no
-                  <% else %>
-                    yes (<%= @task.filed_at %>)
-                  <% end %>
-                </td>
-              </tr>
-              <tr>
-                <th>due</th>
-                <td><%= @task.due_at %></td>
-              </tr>
-              <tr>
-                <th>updated</th>
-                <td><%= @task.updated_at %></td>
-              </tr>
-              <tr>
-                <th>created</th>
-                <td><%= @task.inserted_at %></td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-    </article>
+      <table class="table is-bordered is-fullwidth">
+        <tbody>
+            <tr>
+              <th>filed</th>
+              <td>
+                <%= if is_nil(@task.filed_at) do %>
+                  no
+                <% else %>
+                  yes (<%= @task.filed_at %>)
+                <% end %>
+              </td>
+            </tr>
+            <tr>
+              <th>due</th>
+              <td><%= @task.due_at %></td>
+            </tr>
+            <tr>
+              <th>updated</th>
+              <td><%= @task.updated_at %></td>
+            </tr>
+            <tr>
+              <th>created</th>
+              <td><%= @task.inserted_at %></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="field is-grouped">
       <p class="control">
         <%= link "edit", to: Routes.task_path(@conn, :edit, @task.id), class: "button is-dark" %>

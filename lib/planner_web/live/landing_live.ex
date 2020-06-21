@@ -18,14 +18,14 @@ defmodule PlannerWeb.LandingLive do
   def render(assigns) do
     ~L"""
     <div class="box">
-    <%= f = form_for(@new_task_changeset, "#", [phx_submit: :save_new_task]) %>
-      <div class="field">
-        <div class="control">
-          <%= text_input f, :value, placeholder: "add new task", class: "input" %>
+      <%= f = form_for(@new_task_changeset, "#", [phx_submit: :save_new_task]) %>
+        <div class="field">
+          <div class="control">
+            <%= text_input f, :value, placeholder: "add new task", class: "input" %>
+          </div>
+          <%= error_tag f, :value %>
         </div>
-        <%= error_tag f, :value %>
-      </div>
-    </form>
+      </form>
     </div>
     """
   end
