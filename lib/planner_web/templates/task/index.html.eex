@@ -1,33 +1,29 @@
-<div class="columns">
-  <div class="column table-container">
-    <%= link "new", to: Routes.task_path(@conn, :new), class: "button is-dark" %>
+<%= link "new", to: Routes.task_path(@conn, :new), class: "button is-dark" %>
 
-    <div class="table-container">
-      <table class="table is-striped is-hoverable is-fullwidth" style="table-layout: fixed;">
-        <thead>
-          <tr>
-            <th>task</th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= for task <- @tasks do %>
-            <tr>
-             <td>
-                <%= if not is_nil(task.due_at) do %>
-                  <div class="tags mb-0">
-                    <span class="tag is-warning">
-                      due: <%= task.due_at %>
-                    </span>
-                  </div>
-                <% end %>
-                <%= link to: Routes.task_path(@conn, :show, task.id), class: "has-text-black" do %>
-                  <%= task.value %>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div class="table-container">
+  <table class="table is-striped is-hoverable is-fullwidth" style="table-layout: fixed;">
+    <thead>
+      <tr>
+        <th>task</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for task <- @tasks do %>
+        <tr>
+         <td>
+            <%= if not is_nil(task.due_at) do %>
+              <div class="tags mb-0">
+                <span class="tag is-warning">
+                  due: <%= task.due_at %>
+                </span>
+              </div>
+            <% end %>
+            <%= link to: Routes.task_path(@conn, :show, task.id), class: "has-text-black" do %>
+              <%= task.value %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
