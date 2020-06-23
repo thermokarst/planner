@@ -10,6 +10,7 @@ defmodule PlannerWeb.LandingLive do
   def mount(_params, _session, socket) do
     socket =
       socket
+      |> clear_flash(:info)
       |> assign(:new_task_changeset, Tasks.change_task(%Task{}))
 
     {:ok, socket}
@@ -32,10 +33,12 @@ defmodule PlannerWeb.LandingLive do
 
   def handle_event("save_new_task", %{"task" => task_params}, socket) do
     case Tasks.add_task(task_params) do
-      {:ok, _task} ->
+      {:ok, task} ->
         {:noreply,
          socket
-         |> put_flash(:info, "task created")}
+         |> clear_flash(:info)
+         |> put_flash(:info, "task '" <> task.value <> "' created")
+         |> assign(:new_task_changeset, Tasks.change_task(%Task{}))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply,
