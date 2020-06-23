@@ -1,12 +1,14 @@
 <main role="main" class="container">
   <%= if not is_nil(get_flash(@conn, :info)) do %>
     <p class="notification is-info" role="alert">
+      <button class="delete" onclick="this.parentNode.remove();"></button>
       <%= get_flash(@conn, :info) %>
     </p>
   <% end %>
 
   <%= if not is_nil(get_flash(@conn, :error)) do %>
     <p class="notification is-danger" role="alert">
+      <button class="delete" onclick="this.parentNode.remove();"></button>
       <%= get_flash(@conn, :error) %>
     </p>
   <% end %>
