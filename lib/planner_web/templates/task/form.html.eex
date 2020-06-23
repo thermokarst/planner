@@ -8,7 +8,7 @@
 
     <div class="field">
       <div class="control">
-        <%= textarea f, :value, required: true, class: "textarea", placeholder: "task" %>
+        <%= textarea f, :value, required: true, class: "textarea", placeholder: "task", autocomplete: "off" %>
       </div>
       <%= error_tag f, :value %>
     </div>
@@ -18,7 +18,7 @@
         due (YYYY-MM-DD HH:MM:SS)
       <% end %>
       <div class="control">
-        <%= text_input f, :due_at, class: "input", placeholder: "YYYY-MM-DD HH:MM:SS" %>
+        <%= text_input f, :due_at, class: "input", placeholder: "YYYY-MM-DD HH:MM:SS", autocomplete: "off" %>
       </div>
       <%= error_tag f, :due_at %>
     </div>
