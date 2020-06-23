@@ -21,7 +21,7 @@ defmodule PlannerWeb.LandingLive do
       <%= f = form_for(@new_task_changeset, "#", [phx_submit: :save_new_task]) %>
         <div class="field">
           <div class="control">
-            <%= text_input f, :value, placeholder: "add new task", class: "input" %>
+            <%= text_input f, :value, placeholder: "add new task", class: "input", autocomplete: "off" %>
           </div>
           <%= error_tag f, :value %>
         </div>
