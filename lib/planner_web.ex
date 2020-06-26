@@ -38,6 +38,9 @@ defmodule PlannerWeb do
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
       import Phoenix.LiveView.Helpers
 
+      # Internal View Utils
+      import PlannerWeb.Util
+
       # Include shared imports and aliases for views
       unquote(view_helpers())
     end

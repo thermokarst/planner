@@ -36,6 +36,7 @@ defmodule Planner.MixProject do
       {:bcrypt_elixir, "~> 2.0"},
       {:phoenix, "~> 1.5.1"},
       {:phoenix_ecto, "~> 4.1"},
+      {:earmark, "~> 1.4.5"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},

@@ -6,9 +6,9 @@
     </div>
   <% end %>
 
-  <p class="mb-5">
-    <%= @task.value %>
-  </p>
+  <div class="mb-5">
+    <%= md_to_html @task.value %>
+  </div>
 
   <div class="tags">
     <span class="tag is-light">updated: <%= @task.updated_at %></span>
