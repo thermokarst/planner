@@ -19,7 +19,7 @@
               </div>
             <% end %>
             <%= link to: Routes.task_path(@conn, :show, task.id), class: "has-text-black" do %>
-              <%= task.value %>
+              <%= md_to_html task.value %>
             <% end %>
           </td>
         </tr>
