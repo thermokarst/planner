@@ -7,7 +7,7 @@
   <% end %>
 
   <div class="mb-5">
-    <%= raw @value_md %>
+    <%= md_to_html @task.value %>
   </div>
 
   <div class="tags">

@@ -37,28 +37,10 @@ defmodule PlannerWeb.TaskController do
     end
   end
 
-  def value_as_md(conn, value) do
-    case Earmark.as_html(value) do
-      {:ok, html_doc, []} ->
-        conn
-        |> assign(:value_md, html_doc)
-
-      {:ok, html_doc, deprecation_msgs} when deprecation_msgs != [] ->
-        conn
-        |> assign(:value_md, html_doc)
-        |> put_flash(:error, deprecation_msgs)
-
-      {:error, _html_doc, error_msgs} ->
-        conn
-        |> put_flash(:error, error_msgs)
-    end
-  end
-
   def show(conn, %{"id" => id}) do
     task = Tasks.get_task!(id)
 
     conn
-    |> value_as_md(task.value)
     |> assign(:task, task)
     |> render("show.html")
   end
