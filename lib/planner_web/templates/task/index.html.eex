@@ -1,5 +1,35 @@
 <%= link "new", to: Routes.task_path(@conn, :new), class: "button is-dark" %>
 
+<div class="content">
+  <ul class="tasks">
+    <li>
+      <div>
+        <div class="is-pulled-left mr-3">
+          <button type="button" role="checkbox" class="doit"></button>
+        </div>
+
+        <div>
+          <div>
+            Quisque pretium ligula in malesuada facilisis.
+          </div>
+          <div class="tags mb-0">
+            <span class="tag">
+              due: 2020-02-02
+            </span>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>Nunc vehicula odio vitae mauris varius vehicula.</li>
+    <li>Aliquam rutrum erat a luctus aliquet.</li>
+    <li>Curabitur nec turpis ac ipsum hendrerit malesuada ac ut tellus.</li>
+    <li>Maecenas vestibulum velit et massa fermentum, vitae molestie ex
+    malesuada. Maecenas vestibulum velit et massa fermentum, vitae molestie
+    ex malesuada. Maecenas vestibulum velit et massa fermentum, vitae
+    molestie ex malesuada.</li>
+  </ul>
+</div>
+
 <div class="table-container">
   <table class="table is-striped is-hoverable is-fullwidth" style="table-layout: fixed;">
     <thead>

@@ -1,1 +1,23 @@
 @import "bulma/bulma.sass";
+
+.tasks li {
+    @extend .py-3, .px-5;
+    list-style: none;
+    border-bottom: 1px solid #eee;
+    &:last-child {
+        border-bottom: 0px;
+    }
+}
+
+.doit {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    border: 1px solid #888;
+    border-radius: 16px;
+    background-color: transparent;
+
+    &:hover {
+        background-color: #eee;
+    }
+}
