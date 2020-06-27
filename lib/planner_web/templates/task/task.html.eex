@@ -1,15 +1,11 @@
 <div>
-
   <div class="is-pulled-left">
     <button type="button" role="checkbox" class="doit"></button>
   </div>
-
   <div class="ml-5-5">
-
     <div class="value" onclick="location.href='<%= Routes.task_path(@conn, :show, @task.id) %>'">
       <%= md_to_html @task.value %>
     </div>
-
     <%= if not is_nil(@task.due_at) do %>
       <div class="tags mb-0">
         <span class="tag">
@@ -17,7 +13,5 @@
         </span>
       </div>
     <% end %>
-
   </div>
-
 </div>
