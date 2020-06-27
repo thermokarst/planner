@@ -2,58 +2,8 @@
 
 <div class="content">
   <ul class="tasks">
-    <li>
-      <div>
-        <div class="is-pulled-left mr-3">
-          <button type="button" role="checkbox" class="doit"></button>
-        </div>
-
-        <div>
-          <div>
-            Quisque pretium ligula in malesuada facilisis.
-          </div>
-          <div class="tags mb-0">
-            <span class="tag">
-              due: 2020-02-02
-            </span>
-          </div>
-        </div>
-      </div>
-    </li>
-    <li>Nunc vehicula odio vitae mauris varius vehicula.</li>
-    <li>Aliquam rutrum erat a luctus aliquet.</li>
-    <li>Curabitur nec turpis ac ipsum hendrerit malesuada ac ut tellus.</li>
-    <li>Maecenas vestibulum velit et massa fermentum, vitae molestie ex
-    malesuada. Maecenas vestibulum velit et massa fermentum, vitae molestie
-    ex malesuada. Maecenas vestibulum velit et massa fermentum, vitae
-    molestie ex malesuada.</li>
+    <%= for task <- @tasks do %>
+      <li><%= render "task.html", Map.put(assigns, :task, task) %></li>
+    <% end %>
   </ul>
-</div>
-
-<div class="table-container">
-  <table class="table is-striped is-hoverable is-fullwidth" style="table-layout: fixed;">
-    <thead>
-      <tr>
-        <th>task</th>
-      </tr>
-    </thead>
-    <tbody>
-      <%= for task <- @tasks do %>
-        <tr>
-         <td>
-            <%= if not is_nil(task.due_at) do %>
-              <div class="tags mb-0">
-                <span class="tag is-warning">
-                  due: <%= task.due_at %>
-                </span>
-              </div>
-            <% end %>
-            <%= link to: Routes.task_path(@conn, :show, task.id), class: "has-text-black" do %>
-              <%= md_to_html task.value %>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
 </div>
