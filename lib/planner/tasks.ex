@@ -63,4 +63,10 @@ defmodule Planner.Tasks do
     get_task!(id)
     |> Repo.delete()
   end
+
+  def finish_task_by_id!(id) do
+    get_task!(id)
+    |> Task.finish_task()
+    |> Repo.update()
+  end
 end

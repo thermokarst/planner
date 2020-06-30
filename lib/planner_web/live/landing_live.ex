@@ -37,7 +37,7 @@ defmodule PlannerWeb.LandingLive do
         {:noreply,
          socket
          |> clear_flash(:info)
-         |> put_flash(:info, "task '" <> task.value <> "' created")
+         |> put_flash(:info, "task '#{task.value}' created")
          |> assign(:new_task_changeset, Tasks.change_task(%Task{}))}
 
       {:error, %Ecto.Changeset{} = changeset} ->

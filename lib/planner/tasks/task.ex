@@ -20,4 +20,11 @@ defmodule Planner.Tasks.Task do
     |> validate_required([:value])
     |> validate_length(:value, min: 3)
   end
+
+  @doc false
+  def finish_task(task) do
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    # TODO, this should check if `finished_at` is not nil, first
+    change(task, finished_at: now)
+  end
 end
