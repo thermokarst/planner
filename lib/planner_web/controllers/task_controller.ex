@@ -77,7 +77,6 @@ defmodule PlannerWeb.TaskController do
   # is a "task finished" action
   def update(conn, %{"id" => id}) do
     {_, task} = Tasks.finish_task_by_id!(id)
-    IO.inspect(task)
 
     conn
     |> put_flash(:info, "task '#{task.value}' finished")

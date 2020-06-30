@@ -1,6 +1,6 @@
 <div>
   <div class="is-pulled-left">
-    <%= link(to: Routes.task_path(@conn, :update, @task.id), method: :patch, data: [finished: true]) do %>
+    <%= link(to: Routes.task_path(@conn, :update, @task.id), method: :patch) do %>
     <button type="button" role="checkbox" class="doit"></button>
     <% end %>
   </div>
