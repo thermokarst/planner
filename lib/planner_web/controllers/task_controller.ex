@@ -72,6 +72,17 @@ defmodule PlannerWeb.TaskController do
     end
   end
 
+  # this is a little bit of a hack, but it'll do for now:
+  # pattern match on the empty case, we will assume this
+  # is a "task finished" action
+  def update(conn, %{"id" => id}) do
+    {_, task} = Tasks.finish_task_by_id!(id)
+
+    conn
+    |> put_flash(:info, "task '#{task.value}' finished")
+    |> redirect(to: Routes.task_path(conn, :index))
+  end
+
   def delete(conn, %{"id" => id}) do
     {:ok, _task} = Tasks.delete_task_by_id!(id)
 

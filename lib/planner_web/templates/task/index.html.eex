@@ -1,29 +1,9 @@
 <%= link "new", to: Routes.task_path(@conn, :new), class: "button is-dark" %>
 
-<div class="table-container">
-  <table class="table is-striped is-hoverable is-fullwidth" style="table-layout: fixed;">
-    <thead>
-      <tr>
-        <th>task</th>
-      </tr>
-    </thead>
-    <tbody>
-      <%= for task <- @tasks do %>
-        <tr>
-         <td>
-            <%= if not is_nil(task.due_at) do %>
-              <div class="tags mb-0">
-                <span class="tag is-warning">
-                  due: <%= task.due_at %>
-                </span>
-              </div>
-            <% end %>
-            <%= link to: Routes.task_path(@conn, :show, task.id), class: "has-text-black" do %>
-              <%= md_to_html task.value %>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+<div class="content">
+  <ul class="tasks">
+    <%= for task <- @tasks do %>
+      <li><%= render "task.html", Map.put(assigns, :task, task) %></li>
+    <% end %>
+  </ul>
 </div>
