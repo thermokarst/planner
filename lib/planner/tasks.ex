@@ -59,6 +59,8 @@ defmodule Planner.Tasks do
 
   def get_task!(id), do: Repo.get!(Task, id)
 
+  def exists?(id), do: Repo.exists?(from(t in Task, where: t.id == ^id))
+
   def delete_task_by_id!(id) do
     get_task!(id)
     |> Repo.delete()
