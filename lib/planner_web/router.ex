@@ -54,6 +54,8 @@ defmodule PlannerWeb.Router do
 
     live("/", LandingLive, :index)
 
+    live("/tmp2", Tmp2Live)
+
     live("/tmp", TmpLive, :index)
     live("/tmp/:id", TmpLive, :show)
 

@@ -34,7 +34,7 @@ defmodule Planner.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 2.0"},
-      {:phoenix, "~> 1.5.1"},
+      {:phoenix, "~> 1.5.3"},
       {:phoenix_ecto, "~> 4.1"},
       {:earmark, "~> 1.4.5"},
       {:ecto_sql, "~> 3.4"},
@@ -48,7 +48,7 @@ defmodule Planner.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:phoenix_live_view, "~> 0.13.2"},
+      {:phoenix_live_view, "~> 0.13.3"},
       {:floki, ">= 0.0.0", only: :test}
     ]
   end
