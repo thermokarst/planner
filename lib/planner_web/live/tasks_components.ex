@@ -1,5 +1,5 @@
 defmodule TasksComponent do
-  use Phoenix.LiveComponent
+  use PlannerWeb, :live_component
 
   def render(assigns) do
     ~L"""
@@ -10,7 +10,8 @@ defmodule TasksComponent do
             TaskComponent,
             id: task.id,
             task: task,
-            show_details: @active_task == task.id,
+            live_action: @live_action,
+            is_active: @active_task == task.id,
             route_func_2: @route_func_2,
             route_func_3: @route_func_3
           )%>
@@ -34,12 +35,22 @@ defmodule TaskComponent do
           <button type="button" role="checkbox" class="doit"></button>
         </div>
         <div class="ml-5-5">
-          <%= if(@show_details) do %>
-            <%= live_component(@socket,
-              TaskDetailsComponent,
-              task: @task,
-              route_func_2: @route_func_2
-            )%>
+          <%= if(@is_active) do %>
+            <%= case @live_action do %>
+              <% :show -> %>
+                <%= live_component(@socket,
+                  TaskDetailsComponent,
+                  task: @task,
+                  route_func_2: @route_func_2,
+                  route_func_3: @route_func_3
+                )%>
+              <% :edit -> %>
+                 <%= live_component(@socket,
+                  TaskEditComponent,
+                  task: @task,
+                  action: "hello"
+                )%>
+              <% end %>
           <% else %>
             <%= live_patch(to: @route_func_3.(@socket, :show, @task.id), style: "display: block;") do %>
               <div class="value ">
@@ -62,9 +73,7 @@ defmodule TaskComponent do
 end
 
 defmodule TaskDetailsComponent do
-  use Phoenix.LiveComponent
-
-  import PlannerWeb.Util
+  use PlannerWeb, :live_component
 
   def render(assigns) do
     ~L"""
@@ -85,6 +94,74 @@ defmodule TaskDetailsComponent do
         <span class="tag is-light">updated: <%= @task.updated_at %></span>
         <span class="tag is-light">created: <%= @task.inserted_at %></span>
       </div>
+
+      <div class="buttons has-addons">
+        <%= live_patch("edit", to: @route_func_3.(@socket, :edit, @task.id), class: "button is-dark is-small") %>
+        <a class="button is-dark is-small">delete</a>
+      </div>
+
+    </div>
+    """
+  end
+end
+
+defmodule TaskEditComponent do
+  use PlannerWeb, :live_component
+
+  alias Planner.Tasks
+
+  def update(assigns, socket) do
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign(:changeset, Tasks.change_task(assigns.task))
+
+    {:ok, socket}
+  end
+
+  def render(assigns) do
+    ~L"""
+    <div class="box">
+      <%= form_for @changeset, @action, fn f -> %>
+        <%= if @changeset.action do %>
+          <div class="help is-danger">
+            <p>something went wrong (see below)</p>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <div class="control">
+            <%= textarea f, :value, required: true, class: "textarea", placeholder: "task", autocomplete: "off" %>
+          </div>
+          <%= error_tag f, :value %>
+        </div>
+
+        <div class="field">
+          <%= label f, :due_at, class: "label" do %>
+            due (YYYY-MM-DD HH:MM:SS)
+          <% end %>
+          <div class="control">
+            <%= text_input f, :due_at, class: "input", placeholder: "YYYY-MM-DD HH:MM:SS", autocomplete: "off" %>
+          </div>
+          <%= error_tag f, :due_at %>
+        </div>
+
+        <div class="field">
+          <%= label f, :finished_at, class: "label" do %>
+            <%= if is_nil(@task.finished_at) do %>
+              <%= checkbox f, :finished_at %>
+            <% else %>
+              <%= checkbox f, :finished_at, checked_value: @task.finished_at %>
+            <% end %>
+            finished
+          <% end %>
+          <%= error_tag f, :finished_at %>
+        </div>
+
+        <div class="control">
+          <%= submit "save", class: "button is-dark" %>
+        </div>
+      <% end %>
     </div>
     """
   end

@@ -57,6 +57,7 @@ defmodule PlannerWeb.Router do
     # TODO: update URL when done prepping
     live("/tmp", TasksLive, :index)
     live("/tmp/:id", TasksLive, :show)
+    live("/tmp/:id/edit", TasksLive, :edit)
 
     resources("/tasks", TaskController)
 

@@ -1,9 +1,7 @@
 defmodule PlannerWeb.TasksLive do
-  use Phoenix.LiveView, layout: {PlannerWeb.LayoutView, "live.html"}
-  use Phoenix.HTML
+  use PlannerWeb, :live_view
 
   alias Ecto.UUID
-  alias PlannerWeb.Router.Helpers, as: Routes
   alias Planner.Tasks
 
   def mount(_params, _session, socket) do
@@ -17,15 +15,11 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_params(%{"id" => task_id}, _, socket) do
-    case UUID.dump(task_id) do
-      {:ok, _} ->
-        case Tasks.exists?(task_id) do
-          true -> {:noreply, assign(socket, :active_task, task_id)}
-          _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
-        end
+    IO.inspect(socket)
 
-      _ ->
-        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+    case verify_task_id_from_url(task_id) do
+      true -> {:noreply, assign(socket, :active_task, task_id)}
+      _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
     end
   end
 
@@ -38,6 +32,7 @@ defmodule PlannerWeb.TasksLive do
     <div phx-window-keydown="keydown" phx-key="Escape">
       <%= live_component(@socket,
         TasksComponent,
+        live_action: @live_action,
         tasks: @tasks,
         active_task: @active_task,
         route_func_2: &Routes.tasks_path/2,
@@ -51,6 +46,20 @@ defmodule PlannerWeb.TasksLive do
     case socket.assigns.live_action do
       :index -> {:noreply, socket}
       _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+    end
+  end
+
+  defp verify_task_id_from_url(task_id) do
+    task_id =
+      case UUID.dump(task_id) do
+        # don't actually want the dumped UUID, so discard
+        {:ok, _} -> task_id
+        :error -> :error
+      end
+
+    case task_id do
+      :error -> :error
+      _ -> Tasks.exists?(task_id)
     end
   end
 end
