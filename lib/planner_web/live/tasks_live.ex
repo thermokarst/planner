@@ -15,8 +15,6 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_params(%{"id" => task_id}, _, socket) do
-    IO.inspect(socket)
-
     case verify_task_id_from_url(task_id) do
       true -> {:noreply, assign(socket, :active_task, task_id)}
       _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
@@ -46,6 +44,21 @@ defmodule PlannerWeb.TasksLive do
     case socket.assigns.live_action do
       :index -> {:noreply, socket}
       _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+    end
+  end
+
+  def handle_event("save-task", %{"task" => task_params}, socket) do
+    task = Tasks.get_task!(task_params["id"])
+
+    case Tasks.update_task(task, task_params) do
+      {:ok, task} ->
+        # I suspect splicing in the updated task isn't much faster than just refreshing the whole list
+        socket = assign(socket, :tasks, Tasks.list_unfinished_tasks())
+        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :show, task.id))}
+
+      {:error, changeset} ->
+        send_update(TaskEditComponent, id: "task_edit:#{task.id}", changeset: changeset)
+        {:noreply, socket}
     end
   end
 

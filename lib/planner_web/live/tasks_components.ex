@@ -8,7 +8,7 @@ defmodule TasksComponent do
         <%= for task <- @tasks do %>
           <%= live_component(@socket,
             TaskComponent,
-            id: task.id,
+            id: "task:#{task.id}",
             task: task,
             live_action: @live_action,
             is_active: @active_task == task.id,
@@ -40,6 +40,7 @@ defmodule TaskComponent do
               <% :show -> %>
                 <%= live_component(@socket,
                   TaskDetailsComponent,
+                  id: "task_details:#{@task.id}",
                   task: @task,
                   route_func_2: @route_func_2,
                   route_func_3: @route_func_3
@@ -47,8 +48,8 @@ defmodule TaskComponent do
               <% :edit -> %>
                  <%= live_component(@socket,
                   TaskEditComponent,
-                  task: @task,
-                  action: "hello"
+                  id: "task_edit:#{@task.id}",
+                  task: @task
                 )%>
               <% end %>
           <% else %>
@@ -110,6 +111,10 @@ defmodule TaskEditComponent do
 
   alias Planner.Tasks
 
+  def update(%{:changeset => changeset, :id => _id}, socket) do
+    {:ok, assign(socket, :changeset, changeset)}
+  end
+
   def update(assigns, socket) do
     socket =
       socket
@@ -122,12 +127,14 @@ defmodule TaskEditComponent do
   def render(assigns) do
     ~L"""
     <div class="box">
-      <%= form_for(@changeset, @action, fn f -> %>
+      <%= f = form_for(@changeset, "#", [phx_submit: "save-task"]) %>
         <%= if(@changeset.action) do %>
           <div class="help is-danger">
             <p>something went wrong (see below)</p>
           </div>
         <% end %>
+
+        <%= hidden_input(f, :id) %>
 
         <div class="field">
           <div class="control">
@@ -159,9 +166,9 @@ defmodule TaskEditComponent do
         </div>
 
         <div class="control">
-          <%= submit("save", class: "button is-dark") %>
+          <%= submit("save", class: "button is-dark is-small") %>
         </div>
-      <% end) %>
+      </form>
     </div>
     """
   end
