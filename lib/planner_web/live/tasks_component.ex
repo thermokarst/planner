@@ -8,7 +8,7 @@ defmodule TasksComponent do
     <div class="content">
       <ul class="tasks">
         <%= for task <- @tasks do %>
-          <%= live_component @socket, TaskComponent, id: task.id, task: task %>
+          <%= live_component @socket, TaskComponent, id: task.id, task: task, show_details: @active_task == task.id %>
         <% end %>
       </ul>
     </div>
@@ -23,14 +23,6 @@ defmodule TaskComponent do
 
   alias PlannerWeb.Router.Helpers, as: Routes
 
-  def mount(socket) do
-    socket =
-      socket
-      |> assign(:is_active, nil)
-
-    {:ok, socket}
-  end
-
   def render(assigns) do
     ~L"""
     <li>
@@ -39,9 +31,9 @@ defmodule TaskComponent do
           <button type="button" role="checkbox" class="doit"></button>
         </div>
         <div class="ml-5-5">
-          <%= if(@is_active) do %>
+          <%= if(@show_details) do %>
             <div class="box">
-              <button class="delete is-pulled-right" phx-click="hide-task-details" phx-target="<%= @myself %>"></button>
+              <button class="delete is-pulled-right" phx-click="hide-task-details"></button>
               <%= if not is_nil(@task.due_at) or is_nil(@task.filed_at) do %>
                 <div class="tags">
                   <%= if not is_nil(@task.due_at) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
@@ -59,7 +51,7 @@ defmodule TaskComponent do
               </div>
             </div>
           <% else %>
-            <a style="display: block;" phx-click="show-task-details" phx-value-task-id="<%= @task.id %>" phx-target="<%= @myself %>">
+            <a style="display: block;" phx-click="show-task-details" phx-value-task-id="<%= @task.id %>">
               <div class="value ">
                 <%= md_to_html(@task.value) %>
               </div>
@@ -76,23 +68,5 @@ defmodule TaskComponent do
       </div>
     </li>
     """
-  end
-
-  def handle_event("show-task-details", %{"task-id" => task_id}, socket) do
-    socket =
-      socket
-      |> assign(:is_active, true)
-      |> push_patch(to: Routes.tmp_path(socket, :show, task_id))
-
-    {:noreply, socket}
-  end
-
-  def handle_event("hide-task-details", _, socket) do
-    socket =
-      socket
-      |> assign(:is_active, false)
-      |> push_patch(to: Routes.tmp_path(socket, :index))
-
-    {:noreply, socket}
   end
 end

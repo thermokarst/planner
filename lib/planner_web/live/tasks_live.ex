@@ -19,10 +19,6 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_params(%{"id" => task_id}, _, socket) do
-    if(!is_nil(socket.assigns.active_task),
-      do: send_update(TaskComponent, id: socket.assigns.active_task, is_active: false)
-    )
-
     case UUID.dump(task_id) do
       {:ok, _} ->
         case Tasks.exists?(task_id) do
@@ -31,15 +27,14 @@ defmodule PlannerWeb.TasksLive do
               socket
               |> assign(:active_task, task_id)
 
-            send_update(TaskComponent, id: task_id, is_active: true)
             {:noreply, socket}
 
           _ ->
-            {:noreply, push_patch(socket, to: Routes.tmp_path(socket, :index))}
+            {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
         end
 
       _ ->
-        {:noreply, push_patch(socket, to: Routes.tmp_path(socket, :index))}
+        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
     end
   end
 
@@ -54,7 +49,7 @@ defmodule PlannerWeb.TasksLive do
   def render(assigns) do
     ~L"""
     <div phx-window-keydown="keydown" phx-key="Escape">
-      <%= live_component @socket, TasksComponent, tasks: @tasks %>
+      <%= live_component @socket, TasksComponent, tasks: @tasks, active_task: @active_task %>
     </div>
     """
   end
@@ -67,11 +62,25 @@ defmodule PlannerWeb.TasksLive do
       _ ->
         socket =
           socket
-          |> push_patch(to: Routes.tmp_path(socket, :index))
-
-        send_update(TaskComponent, id: socket.assigns.active_task, is_active: false)
+          |> push_patch(to: Routes.tasks_path(socket, :index))
 
         {:noreply, socket}
     end
+  end
+
+  def handle_event("show-task-details", %{"task-id" => task_id}, socket) do
+    socket =
+      socket
+      |> push_patch(to: Routes.tasks_path(socket, :show, task_id))
+
+    {:noreply, socket}
+  end
+
+  def handle_event("hide-task-details", _, socket) do
+    socket =
+      socket
+      |> push_patch(to: Routes.tasks_path(socket, :index))
+
+    {:noreply, socket}
   end
 end
