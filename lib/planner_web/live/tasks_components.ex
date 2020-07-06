@@ -57,7 +57,7 @@ defmodule TaskComponent do
                 <%= md_to_html(@task.value) %>
               </div>
             <% end %>
-            <%= if not is_nil(@task.due_at) do %>
+            <%= if(not is_nil(@task.due_at)) do %>
               <div class="tags mb-0">
                 <span class="tag">
                   due: <%= @task.due_at %>
@@ -79,15 +79,15 @@ defmodule TaskDetailsComponent do
     ~L"""
     <div class="box">
       <%= live_patch("", to: @route_func_2.(@socket, :index), class: "delete is-pulled-right") %>
-      <%= if not is_nil(@task.due_at) or is_nil(@task.filed_at) do %>
+      <%= if(not is_nil(@task.due_at) or is_nil(@task.filed_at)) do %>
         <div class="tags">
-          <%= if not is_nil(@task.due_at) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
-          <%= if is_nil(@task.filed_at) do %><span class="tag is-danger">unfiled</span><% end %>
+          <%= if(not is_nil(@task.due_at)) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
+          <%= if(is_nil(@task.filed_at)) do %><span class="tag is-danger">unfiled</span><% end %>
         </div>
       <% end %>
 
       <div class="mb-5">
-        <%= md_to_html @task.value %>
+        <%= md_to_html(@task.value) %>
       </div>
 
       <div class="tags">
@@ -122,8 +122,8 @@ defmodule TaskEditComponent do
   def render(assigns) do
     ~L"""
     <div class="box">
-      <%= form_for @changeset, @action, fn f -> %>
-        <%= if @changeset.action do %>
+      <%= form_for(@changeset, @action, fn f -> %>
+        <%= if(@changeset.action) do %>
           <div class="help is-danger">
             <p>something went wrong (see below)</p>
           </div>
@@ -131,37 +131,37 @@ defmodule TaskEditComponent do
 
         <div class="field">
           <div class="control">
-            <%= textarea f, :value, required: true, class: "textarea", placeholder: "task", autocomplete: "off" %>
+            <%= textarea(f, :value, required: true, class: "textarea", placeholder: "task", autocomplete: "off") %>
           </div>
-          <%= error_tag f, :value %>
+          <%= error_tag(f, :value) %>
         </div>
 
         <div class="field">
-          <%= label f, :due_at, class: "label" do %>
+          <%= label(f, :due_at, class: "label") do %>
             due (YYYY-MM-DD HH:MM:SS)
           <% end %>
           <div class="control">
-            <%= text_input f, :due_at, class: "input", placeholder: "YYYY-MM-DD HH:MM:SS", autocomplete: "off" %>
+            <%= text_input(f, :due_at, class: "input", placeholder: "YYYY-MM-DD HH:MM:SS", autocomplete: "off") %>
           </div>
-          <%= error_tag f, :due_at %>
+          <%= error_tag(f, :due_at) %>
         </div>
 
         <div class="field">
-          <%= label f, :finished_at, class: "label" do %>
-            <%= if is_nil(@task.finished_at) do %>
-              <%= checkbox f, :finished_at %>
+          <%= label(f, :finished_at, class: "label") do %>
+            <%= if(is_nil(@task.finished_at)) do %>
+              <%= checkbox(f, :finished_at) %>
             <% else %>
-              <%= checkbox f, :finished_at, checked_value: @task.finished_at %>
+              <%= checkbox(f, :finished_at, checked_value: @task.finished_at) %>
             <% end %>
             finished
           <% end %>
-          <%= error_tag f, :finished_at %>
+          <%= error_tag(f, :finished_at) %>
         </div>
 
         <div class="control">
-          <%= submit "save", class: "button is-dark" %>
+          <%= submit("save", class: "button is-dark") %>
         </div>
-      <% end %>
+      <% end) %>
     </div>
     """
   end
