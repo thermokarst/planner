@@ -62,6 +62,17 @@ defmodule PlannerWeb.TasksLive do
     end
   end
 
+  def handle_event("finish-task", %{"task-id" => task_id}, socket) do
+    {_, task} = Tasks.finish_task_by_id!(task_id)
+
+    socket =
+      socket
+      |> assign(:tasks, Tasks.list_unfinished_tasks())
+      |> put_flash(:info, "task \"#{task.value}\" completed")
+
+    {:noreply, socket}
+  end
+
   defp verify_task_id_from_url(task_id) do
     task_id =
       case UUID.dump(task_id) do

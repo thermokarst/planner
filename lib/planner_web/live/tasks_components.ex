@@ -32,7 +32,7 @@ defmodule TaskComponent do
     <li>
       <div>
         <div class="is-pulled-left">
-          <button type="button" role="checkbox" class="doit"></button>
+          <button type="button" role="checkbox" class="doit" phx-click="finish-task" phx-value-task-id="<%= @task.id %>"></button>
         </div>
         <div class="ml-5-5">
           <%= if(@is_active) do %>
@@ -128,13 +128,7 @@ defmodule TaskEditComponent do
     ~L"""
     <div class="box">
       <%= f = form_for(@changeset, "#", [phx_submit: "save-task"]) %>
-        <%= if(@changeset.action) do %>
-          <div class="help is-danger">
-            <p>something went wrong (see below)</p>
-          </div>
-        <% end %>
-
-        <%= hidden_input(f, :id) %>
+       <%= hidden_input(f, :id) %>
 
         <div class="field">
           <div class="control">
