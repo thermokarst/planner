@@ -3,9 +3,7 @@ defmodule PlannerWeb.TasksLive do
   use Phoenix.HTML
 
   alias Ecto.UUID
-
   alias PlannerWeb.Router.Helpers, as: Routes
-
   alias Planner.Tasks
 
   def mount(_params, _session, socket) do

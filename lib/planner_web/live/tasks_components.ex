@@ -1,8 +1,6 @@
 defmodule TasksComponent do
   use Phoenix.LiveComponent
 
-  import PlannerWeb.Util
-
   def render(assigns) do
     ~L"""
     <div class="content">
