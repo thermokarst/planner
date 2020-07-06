@@ -22,15 +22,8 @@ defmodule PlannerWeb.TasksLive do
     case UUID.dump(task_id) do
       {:ok, _} ->
         case Tasks.exists?(task_id) do
-          true ->
-            socket =
-              socket
-              |> assign(:active_task, task_id)
-
-            {:noreply, socket}
-
-          _ ->
-            {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+          true -> {:noreply, assign(socket, :active_task, task_id)}
+          _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
         end
 
       _ ->
@@ -39,48 +32,27 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_params(_, _, socket) do
-    socket =
-      socket
-      |> assign(:active_task, nil)
-
-    {:noreply, socket}
+    {:noreply, assign(socket, :active_task, nil)}
   end
 
   def render(assigns) do
     ~L"""
     <div phx-window-keydown="keydown" phx-key="Escape">
-      <%= live_component @socket, TasksComponent, tasks: @tasks, active_task: @active_task %>
+      <%= live_component(@socket,
+        TasksComponent,
+        tasks: @tasks,
+        active_task: @active_task,
+        route_func_2: &Routes.tasks_path/2,
+        route_func_3: &Routes.tasks_path/3
+      )%>
     </div>
     """
   end
 
   def handle_event("keydown", _params, socket) do
     case socket.assigns.live_action do
-      :index ->
-        {:noreply, socket}
-
-      _ ->
-        socket =
-          socket
-          |> push_patch(to: Routes.tasks_path(socket, :index))
-
-        {:noreply, socket}
+      :index -> {:noreply, socket}
+      _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
     end
-  end
-
-  def handle_event("show-task-details", %{"task-id" => task_id}, socket) do
-    socket =
-      socket
-      |> push_patch(to: Routes.tasks_path(socket, :show, task_id))
-
-    {:noreply, socket}
-  end
-
-  def handle_event("hide-task-details", _, socket) do
-    socket =
-      socket
-      |> push_patch(to: Routes.tasks_path(socket, :index))
-
-    {:noreply, socket}
   end
 end

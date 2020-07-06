@@ -8,7 +8,14 @@ defmodule TasksComponent do
     <div class="content">
       <ul class="tasks">
         <%= for task <- @tasks do %>
-          <%= live_component @socket, TaskComponent, id: task.id, task: task, show_details: @active_task == task.id %>
+          <%= live_component(@socket,
+            TaskComponent,
+            id: task.id,
+            task: task,
+            show_details: @active_task == task.id,
+            route_func_2: @route_func_2,
+            route_func_3: @route_func_3
+          )%>
         <% end %>
       </ul>
     </div>
@@ -21,8 +28,6 @@ defmodule TaskComponent do
 
   import PlannerWeb.Util
 
-  alias PlannerWeb.Router.Helpers, as: Routes
-
   def render(assigns) do
     ~L"""
     <li>
@@ -32,30 +37,17 @@ defmodule TaskComponent do
         </div>
         <div class="ml-5-5">
           <%= if(@show_details) do %>
-            <div class="box">
-              <button class="delete is-pulled-right" phx-click="hide-task-details"></button>
-              <%= if not is_nil(@task.due_at) or is_nil(@task.filed_at) do %>
-                <div class="tags">
-                  <%= if not is_nil(@task.due_at) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
-                  <%= if is_nil(@task.filed_at) do %><span class="tag is-danger">unfiled</span><% end %>
-                </div>
-              <% end %>
-
-              <div class="mb-5">
-                <%= md_to_html @task.value %>
-              </div>
-
-              <div class="tags">
-                <span class="tag is-light">updated: <%= @task.updated_at %></span>
-                <span class="tag is-light">created: <%= @task.inserted_at %></span>
-              </div>
-            </div>
+            <%= live_component(@socket,
+              TaskDetailsComponent,
+              task: @task,
+              route_func_2: @route_func_2
+            )%>
           <% else %>
-            <a style="display: block;" phx-click="show-task-details" phx-value-task-id="<%= @task.id %>">
+            <%= live_patch(to: @route_func_3.(@socket, :show, @task.id), style: "display: block;") do %>
               <div class="value ">
                 <%= md_to_html(@task.value) %>
               </div>
-            </a>
+            <% end %>
             <%= if not is_nil(@task.due_at) do %>
               <div class="tags mb-0">
                 <span class="tag">
@@ -67,6 +59,35 @@ defmodule TaskComponent do
         </div>
       </div>
     </li>
+    """
+  end
+end
+
+defmodule TaskDetailsComponent do
+  use Phoenix.LiveComponent
+
+  import PlannerWeb.Util
+
+  def render(assigns) do
+    ~L"""
+    <div class="box">
+      <%= live_patch("", to: @route_func_2.(@socket, :index), class: "delete is-pulled-right") %>
+      <%= if not is_nil(@task.due_at) or is_nil(@task.filed_at) do %>
+        <div class="tags">
+          <%= if not is_nil(@task.due_at) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
+          <%= if is_nil(@task.filed_at) do %><span class="tag is-danger">unfiled</span><% end %>
+        </div>
+      <% end %>
+
+      <div class="mb-5">
+        <%= md_to_html @task.value %>
+      </div>
+
+      <div class="tags">
+        <span class="tag is-light">updated: <%= @task.updated_at %></span>
+        <span class="tag is-light">created: <%= @task.inserted_at %></span>
+      </div>
+    </div>
     """
   end
 end
