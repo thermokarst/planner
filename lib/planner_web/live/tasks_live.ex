@@ -75,4 +75,15 @@ defmodule PlannerWeb.TasksLive do
 
     {:noreply, socket}
   end
+
+  def handle_event("delete-task", %{"task-id" => task_id}, socket) do
+    {_, task} = Tasks.delete_task_by_id!(task_id)
+
+    socket =
+      socket
+      |> assign(:tasks, Tasks.list_unfinished_tasks())
+      |> put_flash(:info, "task \"#{task.value}\" deleted")
+
+    {:noreply, socket}
+  end
 end

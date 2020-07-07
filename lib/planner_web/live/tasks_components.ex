@@ -4,6 +4,8 @@ defmodule TasksComponent do
   def render(assigns) do
     ~L"""
     <div class="content">
+      <input class="input" type="text" placeholder="Text input">
+
       <ul class="tasks">
         <%= for task <- @tasks do %>
           <%= live_component(@socket,
@@ -119,7 +121,12 @@ defmodule TaskDetailsComponent do
           to: @route_func_3.(@socket, :edit, @task.id),
           class: "button is-dark is-small"
         ) %>
-        <a class="button is-dark is-small">delete</a>
+        <a
+          class="button is-dark is-small"
+          phx-click="delete-task"
+          phx-value-task-id="<%= @task.id %>">
+          delete
+        </a>
       </div>
 
     </div>
