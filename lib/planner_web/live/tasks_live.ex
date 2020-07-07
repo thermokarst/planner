@@ -52,7 +52,11 @@ defmodule PlannerWeb.TasksLive do
     case Tasks.update_task(task, task_params) do
       {:ok, task} ->
         # I suspect splicing in the updated task isn't much faster than just refreshing the whole list
-        socket = assign(socket, :tasks, Tasks.list_unfinished_tasks())
+        socket =
+          socket
+          |> assign(:tasks, Tasks.list_unfinished_tasks())
+          |> put_flash(:info, "task \"#{task.value}\" updated")
+
         {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :show, task.id))}
 
       {:error, changeset} ->

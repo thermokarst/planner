@@ -32,7 +32,13 @@ defmodule TaskComponent do
     <li>
       <div>
         <div class="is-pulled-left">
-          <button type="button" role="checkbox" class="doit" phx-click="finish-task" phx-value-task-id="<%= @task.id %>"></button>
+          <button
+            type="button"
+            role="checkbox"
+            class="doit"
+            phx-click="finish-task"
+            phx-value-task-id="<%= @task.id %>">
+          </button>
         </div>
         <div class="ml-5-5">
           <%= if(@is_active) do %>
@@ -53,7 +59,9 @@ defmodule TaskComponent do
                 )%>
               <% end %>
           <% else %>
-            <%= live_patch(to: @route_func_3.(@socket, :show, @task.id), style: "display: block;") do %>
+            <%= live_patch(to: @route_func_3.(@socket, :show, @task.id),
+              style: "display: block;"
+            ) do %>
               <div class="value ">
                 <%= md_to_html(@task.value) %>
               </div>
@@ -79,11 +87,21 @@ defmodule TaskDetailsComponent do
   def render(assigns) do
     ~L"""
     <div class="box">
-      <%= live_patch("", to: @route_func_2.(@socket, :index), class: "delete is-pulled-right") %>
+      <%= live_patch("",
+        to: @route_func_2.(@socket, :index),
+        class: "delete is-pulled-right"
+      ) %>
       <%= if(not is_nil(@task.due_at) or is_nil(@task.filed_at)) do %>
         <div class="tags">
-          <%= if(not is_nil(@task.due_at)) do %><span class="tag is-warning">due: <%= @task.due_at %></span><% end %>
-          <%= if(is_nil(@task.filed_at)) do %><span class="tag is-danger">unfiled</span><% end %>
+          <%= if(not is_nil(@task.due_at)) do %>
+            <span class="tag is-warning">
+              due: <%= @task.due_at %>
+            </span><% end %>
+          <%= if(is_nil(@task.filed_at)) do %>
+            <span class="tag is-danger">
+              unfiled
+            </span>
+          <% end %>
         </div>
       <% end %>
 
@@ -97,7 +115,10 @@ defmodule TaskDetailsComponent do
       </div>
 
       <div class="buttons has-addons">
-        <%= live_patch("edit", to: @route_func_3.(@socket, :edit, @task.id), class: "button is-dark is-small") %>
+        <%= live_patch("edit",
+          to: @route_func_3.(@socket, :edit, @task.id),
+          class: "button is-dark is-small"
+        ) %>
         <a class="button is-dark is-small">delete</a>
       </div>
 
@@ -132,7 +153,13 @@ defmodule TaskEditComponent do
 
         <div class="field">
           <div class="control">
-            <%= textarea(f, :value, required: true, class: "textarea", placeholder: "task", autocomplete: "off") %>
+            <%= textarea(f,
+              :value,
+              required: true,
+              class: "textarea",
+              placeholder: "task",
+              autocomplete: "off"
+            ) %>
           </div>
           <%= error_tag(f, :value) %>
         </div>
@@ -142,7 +169,12 @@ defmodule TaskEditComponent do
             due (YYYY-MM-DD HH:MM:SS)
           <% end %>
           <div class="control">
-            <%= text_input(f, :due_at, class: "input", placeholder: "YYYY-MM-DD HH:MM:SS", autocomplete: "off") %>
+            <%= text_input(f,
+              :due_at,
+              class: "input",
+              placeholder: "YYYY-MM-DD HH:MM:SS",
+              autocomplete: "off"
+            ) %>
           </div>
           <%= error_tag(f, :due_at) %>
         </div>
