@@ -54,8 +54,7 @@ defmodule PlannerWeb.TasksLive do
         # I suspect splicing in the updated task isn't much faster than just refreshing the whole list
         socket =
           socket
-          |> assign(:tasks, Tasks.list_unfinished_tasks())
-          |> put_flash(:info, "task \"#{task.value}\" updated")
+          |> refresh_tasks_and_flash_msg("task \"#{task.value}\" updated")
 
         {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :show, task.id))}
 
@@ -67,23 +66,17 @@ defmodule PlannerWeb.TasksLive do
 
   def handle_event("finish-task", %{"task-id" => task_id}, socket) do
     {_, task} = Tasks.finish_task_by_id!(task_id)
-
-    socket =
-      socket
-      |> assign(:tasks, Tasks.list_unfinished_tasks())
-      |> put_flash(:info, "task \"#{task.value}\" completed")
-
-    {:noreply, socket}
+    {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" completed")}
   end
 
   def handle_event("delete-task", %{"task-id" => task_id}, socket) do
     {_, task} = Tasks.delete_task_by_id!(task_id)
+    {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" deleted")}
+  end
 
-    socket =
-      socket
-      |> assign(:tasks, Tasks.list_unfinished_tasks())
-      |> put_flash(:info, "task \"#{task.value}\" deleted")
-
-    {:noreply, socket}
+  defp refresh_tasks_and_flash_msg(socket, msg) do
+    socket
+    |> assign(:tasks, Tasks.list_unfinished_tasks())
+    |> put_flash(:info, msg)
   end
 end
