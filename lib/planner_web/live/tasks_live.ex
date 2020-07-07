@@ -1,7 +1,6 @@
 defmodule PlannerWeb.TasksLive do
   use PlannerWeb, :live_view
 
-  alias Ecto.UUID
   alias Planner.Tasks
 
   def mount(_params, _session, socket) do
@@ -15,7 +14,7 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_params(%{"id" => task_id}, _, socket) do
-    case verify_task_id_from_url(task_id) do
+    case Tasks.verify_task_id_from_url(task_id) do
       true -> {:noreply, assign(socket, :active_task, task_id)}
       _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
     end
@@ -71,19 +70,5 @@ defmodule PlannerWeb.TasksLive do
       |> put_flash(:info, "task \"#{task.value}\" completed")
 
     {:noreply, socket}
-  end
-
-  defp verify_task_id_from_url(task_id) do
-    task_id =
-      case UUID.dump(task_id) do
-        # don't actually want the dumped UUID, so discard
-        {:ok, _} -> task_id
-        :error -> :error
-      end
-
-    case task_id do
-      :error -> :error
-      _ -> Tasks.exists?(task_id)
-    end
   end
 end
