@@ -1,10 +1,37 @@
 defmodule TasksComponent do
   use PlannerWeb, :live_component
 
+  alias Planner.Tasks
+  alias Planner.Tasks.Task
+
+  def update(%{:changeset => changeset, :id => _id}, socket) do
+    {:ok, assign(socket, :changeset, changeset)}
+  end
+
+  def update(assigns, socket) do
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign(:changeset, Tasks.change_task(%Task{}))
+
+    {:ok, socket}
+  end
+
   def render(assigns) do
     ~L"""
     <div class="content">
-      <input class="input" type="text" placeholder="Text input">
+      <%= f = form_for(@changeset, "#", [phx_submit: "new-task"]) %>
+        <div class="field">
+          <div class="control">
+            <%= text_input(f,
+              :value,
+              placeholder: "add new task",
+              class: "input", autocomplete: "off"
+            )%>
+          </div>
+          <%= error_tag(f, :value) %>
+        </div>
+      </form>
 
       <ul class="tasks">
         <%= for task <- @tasks do %>

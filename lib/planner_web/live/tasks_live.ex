@@ -29,6 +29,7 @@ defmodule PlannerWeb.TasksLive do
     <div phx-window-keydown="keydown" phx-key="Escape">
       <%= live_component(@socket,
         TasksComponent,
+        id: :all_unfinished_tasks,
         live_action: @live_action,
         tasks: @tasks,
         active_task: @active_task,
@@ -72,6 +73,21 @@ defmodule PlannerWeb.TasksLive do
   def handle_event("delete-task", %{"task-id" => task_id}, socket) do
     {_, task} = Tasks.delete_task_by_id!(task_id)
     {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" deleted")}
+  end
+
+  def handle_event("new-task", %{"task" => task_params}, socket) do
+    case Tasks.add_task(task_params) do
+      {:ok, task} ->
+        socket =
+          socket
+          |> refresh_tasks_and_flash_msg("task \"#{task.value}\" created")
+
+        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :show, task.id))}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        send_update(TasksComponent, id: :all_unfinished_tasks, changeset: changeset)
+        {:noreply, socket}
+    end
   end
 
   defp refresh_tasks_and_flash_msg(socket, msg) do
