@@ -4,6 +4,10 @@
     cursor: pointer;
 }
 
+.tasks {
+    margin-left: 0em !important;
+}
+
 .tasks li {
     @extend .py-1, .px-5;
 

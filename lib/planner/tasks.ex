@@ -1,5 +1,6 @@
 defmodule Planner.Tasks do
   import Ecto.Query
+  alias Ecto.UUID
   alias Planner.Repo
   alias Planner.Tasks.Task
 
@@ -59,6 +60,8 @@ defmodule Planner.Tasks do
 
   def get_task!(id), do: Repo.get!(Task, id)
 
+  def exists?(id), do: Repo.exists?(from(t in Task, where: t.id == ^id))
+
   def delete_task_by_id!(id) do
     get_task!(id)
     |> Repo.delete()
@@ -68,5 +71,19 @@ defmodule Planner.Tasks do
     get_task!(id)
     |> Task.finish_task()
     |> Repo.update()
+  end
+
+  def verify_task_id_from_url(task_id) do
+    task_id =
+      case UUID.dump(task_id) do
+        # don't actually want the dumped UUID, so discard
+        {:ok, _} -> task_id
+        :error -> :error
+      end
+
+    case task_id do
+      :error -> :error
+      _ -> exists?(task_id)
+    end
   end
 end
