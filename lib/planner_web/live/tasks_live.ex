@@ -6,7 +6,6 @@ defmodule PlannerWeb.TasksLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> clear_flash(:info)
       |> assign(:tasks, Tasks.list_unfinished_tasks())
       |> assign(:active_task, nil)
 
