@@ -54,12 +54,11 @@ defmodule PlannerWeb.Router do
 
     live("/", LandingLive, :index)
 
-    # TODO: update URL when done prepping
-    live("/tmp", TasksLive, :index)
-    live("/tmp/:id", TasksLive, :show)
-    live("/tmp/:id/edit", TasksLive, :edit)
+    live("/tasks", TasksLive, :index)
+    live("/tasks/:id", TasksLive, :show)
+    live("/tasks/:id/edit", TasksLive, :edit)
 
-    resources("/tasks", TaskController)
+    resources("/tasks-old", TaskController)
 
     get("/users/settings", UserSettingsController, :edit)
     put("/users/settings/update_password", UserSettingsController, :update_password)
