@@ -1,0 +1,47 @@
+<h1>Show Plan</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, PlannerWeb.PlanLive.FormComponent,
+    id: @plan.id,
+    title: @page_title,
+    action: @live_action,
+    plan: @plan,
+    return_to: Routes.plan_show_path(@socket, :show, @plan) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Id:</strong>
+    <%= @plan.id %>
+  </li>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @plan.name %>
+  </li>
+
+  <li>
+    <strong>Start:</strong>
+    <%= @plan.start %>
+  </li>
+
+  <li>
+    <strong>End:</strong>
+    <%= @plan.end %>
+  </li>
+
+  <li>
+    <strong>Done:</strong>
+    <%= @plan.done %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @plan.description %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.plan_show_path(@socket, :edit, @plan), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.plan_index_path(@socket, :index) %></span>
