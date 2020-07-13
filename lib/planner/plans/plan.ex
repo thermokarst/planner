@@ -10,7 +10,6 @@ defmodule Planner.Plans.Plan do
     field(:end, :naive_datetime)
     field(:name, :string)
     field(:start, :naive_datetime)
-    many_to_many(:tasks, Planner.Tasks.Task, join_through: "tasks_in_plans")
 
     timestamps()
   end
@@ -18,7 +17,7 @@ defmodule Planner.Plans.Plan do
   @doc false
   def changeset(plan, attrs) do
     plan
-    |> cast(attrs, [:id, :name, :start, :end, :done, :description])
-    |> validate_required([:id, :name, :start, :end, :done, :description])
+    |> cast(attrs, [:name, :start, :end, :done, :description])
+    |> validate_required([:name, :done])
   end
 end

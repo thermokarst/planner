@@ -17,8 +17,6 @@ defmodule Planner.Repo.Migrations.CreatePlans do
       add(:task_id, references(:tasks, type: :uuid))
       add(:plan_id, references(:plans, type: :uuid))
       add(:sort, :integer, null: true)
-
-      timestamps()
     end
   end
 end
