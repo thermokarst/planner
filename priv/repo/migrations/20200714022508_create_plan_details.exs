@@ -7,8 +7,6 @@ defmodule Planner.Repo.Migrations.CreatePlanDetails do
       add :sort, :integer
       add :task_id, references(:tasks, on_delete: :nothing, type: :binary_id)
       add :plan_id, references(:plans, on_delete: :nothing, type: :binary_id)
-
-      timestamps()
     end
 
     create index(:plan_details, [:task_id])

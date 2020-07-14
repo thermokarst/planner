@@ -7,9 +7,9 @@ defmodule Planner.Plans.Plan do
   schema "plans" do
     field :description, :string
     field :done, :boolean, default: false
+    field :start, :naive_datetime
     field :end, :naive_datetime
     field :name, :string
-    field :start, :naive_datetime
 
     timestamps()
   end
@@ -18,6 +18,6 @@ defmodule Planner.Plans.Plan do
   def changeset(plan, attrs) do
     plan
     |> cast(attrs, [:name, :start, :end, :done, :description])
-    |> validate_required([:name, :start, :end, :done, :description])
+    |> validate_required([:name])
   end
 end
