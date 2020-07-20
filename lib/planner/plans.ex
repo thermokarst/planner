@@ -1,5 +1,7 @@
 defmodule Planner.Plans do
   import Ecto.Query, warn: false
+
+  alias Ecto.UUID
   alias Planner.Repo
   alias Planner.Plans.Plan
   alias Planner.Plans.PlanDetail
@@ -9,6 +11,8 @@ defmodule Planner.Plans do
   end
 
   def get_plan!(id), do: Repo.get!(Plan, id)
+
+  def exists?(id), do: Repo.exists?(from(p in Plan, where: p.id == ^id))
 
   def create_plan(attrs \\ %{}) do
     %Plan{}
@@ -28,6 +32,20 @@ defmodule Planner.Plans do
 
   def change_plan(%Plan{} = plan, attrs \\ %{}) do
     Plan.changeset(plan, attrs)
+  end
+
+  def verify_plan_id_from_url(plan_id) do
+    plan_id =
+      case UUID.dump(plan_id) do
+        # don't actually want the dumped UUID, so discard
+        {:ok, _} -> plan_id
+        :error -> :error
+      end
+
+    case plan_id do
+      :error -> :error
+      _ -> exists?(plan_id)
+    end
   end
 
   def list_plan_details do

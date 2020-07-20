@@ -8,6 +8,14 @@ defmodule PlannerWeb.PlansLive do
     {:ok, refresh_data(socket)}
   end
 
+  def handle_params(%{"id" => plan_id}, _, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_params(_, _, socket) do
+    {:noreply, socket}
+  end
+
   def render(assigns) do
     ~L"""
     <div class="content">
@@ -26,7 +34,11 @@ defmodule PlannerWeb.PlansLive do
 
       <ul>
         <%= for plan <- @plans do %>
-          <li><%= plan.name %></li>
+          <li>
+            <%= live_patch(to: Routes.plans_path(@socket, :show, plan)) do %>
+              <%= plan.name %>
+            <% end %>
+          </li>
         <% end %>
       </ul>
     </div>
