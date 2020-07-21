@@ -58,8 +58,8 @@ defmodule PlannerWeb.Router do
     live("/tasks/:id", TasksLive, :show)
     live("/tasks/:id/edit", TasksLive, :edit)
 
-    live("/plans", PlansLive, :index)
-    live("/plans/:id", PlansLive, :show)
+    live("/plans", PlansLive.Index)
+    live("/plans/:plan_id", PlansLive.Single, :show)
 
     resources("/tasks-old", TaskController)
 

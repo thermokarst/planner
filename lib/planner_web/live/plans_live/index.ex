@@ -1,4 +1,4 @@
-defmodule PlannerWeb.PlansLive do
+defmodule PlannerWeb.PlansLive.Index do
   use PlannerWeb, :live_view
 
   alias Planner.Plans
@@ -6,14 +6,6 @@ defmodule PlannerWeb.PlansLive do
 
   def mount(_params, _session, socket) do
     {:ok, refresh_data(socket)}
-  end
-
-  def handle_params(%{"id" => plan_id}, _, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_params(_, _, socket) do
-    {:noreply, socket}
   end
 
   def render(assigns) do
@@ -35,7 +27,7 @@ defmodule PlannerWeb.PlansLive do
       <ul>
         <%= for plan <- @plans do %>
           <li>
-            <%= live_patch(to: Routes.plans_path(@socket, :show, plan)) do %>
+            <%= live_patch(to: Routes.plans_single_path(@socket, :show, plan)) do %>
               <%= plan.name %>
             <% end %>
           </li>

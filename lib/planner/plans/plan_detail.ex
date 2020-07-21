@@ -8,8 +8,6 @@ defmodule Planner.Plans.PlanDetail do
     field :sort, :integer
     field :task_id, :binary_id
     field :plan_id, :binary_id
-
-    timestamps()
   end
 
   @doc false
