@@ -3,7 +3,6 @@ defmodule Planner.Repo.Migrations.CreatePlanDetails do
 
   def change do
     create table(:plan_details, primary_key: false) do
-      add :id, :binary_id, primary_key: true
       add :sort, :integer
       add :task_id, references(:tasks, on_delete: :nothing, type: :binary_id)
       add :plan_id, references(:plans, on_delete: :nothing, type: :binary_id)

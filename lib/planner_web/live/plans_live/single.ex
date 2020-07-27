@@ -18,12 +18,30 @@ defmodule PlannerWeb.PlansLive.Single do
   defp fetch_plan(%Socket{assigns: %{plan_id: plan_id}} = socket) do
     socket
     |> assign(plan: Plans.get_plan!(plan_id))
+    |> assign(tasks: Plans.get_tasks(plan_id))
+    |> assign(active_task: nil)
   end
 
   def render(assigns) do
     ~L"""
     <div class="content">
       <%= @plan.name %>
+
+      <br>
+      <br>
+
+      <div phx-window-keydown="keydown" phx-key="Escape">
+        <%= live_component(@socket,
+          TasksComponent,
+          id: :all_unfinished_tasks,
+          live_action: @live_action,
+          tasks: @tasks,
+          active_task: @active_task,
+          route_func_2: &Routes.tasks_path/2,
+          route_func_3: &Routes.tasks_path/3
+        )%>
+      </div>
+
     </div>
     """
   end

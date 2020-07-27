@@ -5,6 +5,7 @@ defmodule Planner.Plans do
   alias Planner.Repo
   alias Planner.Plans.Plan
   alias Planner.Plans.PlanDetail
+  alias Planner.Tasks.Task
 
   def list_plans do
     Repo.all(Plan)
@@ -13,6 +14,18 @@ defmodule Planner.Plans do
   def get_plan!(id), do: Repo.get!(Plan, id)
 
   def exists?(id), do: Repo.exists?(from(p in Plan, where: p.id == ^id))
+
+  def get_tasks(id) do
+    q =
+      Ecto.Query.from(
+        t in Task,
+        join: pd in PlanDetail,
+        on: t.id == pd.task_id,
+        where: pd.plan_id == ^id
+      )
+
+    Repo.all(q)
+  end
 
   def create_plan(attrs \\ %{}) do
     %Plan{}

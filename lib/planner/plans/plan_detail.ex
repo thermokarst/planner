@@ -2,7 +2,7 @@ defmodule Planner.Plans.PlanDetail do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, :binary_id, autogenerate: true}
+  @primary_key false
   @foreign_key_type :binary_id
   schema "plan_details" do
     field :sort, :integer
@@ -13,7 +13,7 @@ defmodule Planner.Plans.PlanDetail do
   @doc false
   def changeset(plan_detail, attrs) do
     plan_detail
-    |> cast(attrs, [:sort])
-    |> validate_required([:sort])
+    |> cast(attrs, [:sort, :task_id, :plan_id])
+    |> validate_required([:task_id, :plan_id])
   end
 end

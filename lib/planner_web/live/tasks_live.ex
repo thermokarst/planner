@@ -9,6 +9,8 @@ defmodule PlannerWeb.TasksLive do
       |> assign(:tasks, Tasks.list_unfinished_tasks())
       |> assign(:active_task, nil)
 
+    IO.inspect(Routes.tasks_path(socket, :index))
+
     {:ok, socket}
   end
 
