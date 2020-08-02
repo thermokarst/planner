@@ -9,8 +9,6 @@ defmodule PlannerWeb.TasksLive do
       |> assign(:tasks, Tasks.list_unfinished_tasks())
       |> assign(:active_task, nil)
 
-    IO.inspect(Routes.tasks_path(socket, :index))
-
     {:ok, socket}
   end
 
@@ -31,11 +29,12 @@ defmodule PlannerWeb.TasksLive do
       <%= live_component(@socket,
         TasksComponent,
         id: :all_unfinished_tasks,
-        live_action: @live_action,
+        action: @live_action,
         tasks: @tasks,
         active_task: @active_task,
-        route_func_2: &Routes.tasks_path/2,
-        route_func_3: &Routes.tasks_path/3
+        route_show_task: &(Routes.tasks_path(&1, :show, &2)),
+        route_edit_task: &(Routes.tasks_path(&1, :edit, &2)),
+        route_index_tasks: &(Routes.tasks_path(&1, :index))
       )%>
     </div>
     """
