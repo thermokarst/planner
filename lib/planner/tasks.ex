@@ -58,17 +58,24 @@ defmodule Planner.Tasks do
 
     task_changeset = Task.changeset(task, attrs)
 
-    pd_attrs = Enum.map(attrs["plans"], &(%{"task_id" => attrs["id"], "plan_id" => &1, "sort" => 0}))
-    plan_changesets = Enum.map(pd_attrs, &(PlanDetail.changeset(%PlanDetail{}, &1)))
-    multi = Enum.reduce(plan_changesets, Multi.new() |> Multi.update(:task, task_changeset),
-      fn(changeset, new_multi) ->
-      Multi.insert(
-        new_multi,
-        changeset.params["plan_id"],
-        changeset,
-        on_conflict: :nothing,
+    pd_attrs =
+      Enum.map(attrs["plans"], &%{"task_id" => attrs["id"], "plan_id" => &1, "sort" => 0})
+
+    plan_changesets = Enum.map(pd_attrs, &PlanDetail.changeset(%PlanDetail{}, &1))
+
+    multi =
+      Enum.reduce(
+        plan_changesets,
+        Multi.new() |> Multi.update(:task, task_changeset),
+        fn changeset, new_multi ->
+          Multi.insert(
+            new_multi,
+            changeset.params["plan_id"],
+            changeset,
+            on_conflict: :nothing
+          )
+        end
       )
-    end)
 
     {:ok, results} = Repo.transaction(multi)
     {:ok, results[:task]}
