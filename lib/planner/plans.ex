@@ -25,6 +25,7 @@ defmodule Planner.Plans do
       )
 
     Repo.all(q)
+    |> Repo.preload(:plans)
   end
 
   def create_plan(attrs \\ %{}) do

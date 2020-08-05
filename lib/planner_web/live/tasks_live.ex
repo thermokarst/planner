@@ -2,10 +2,12 @@ defmodule PlannerWeb.TasksLive do
   use PlannerWeb, :live_view
 
   alias Planner.Tasks
+  alias Planner.Plans
 
   def mount(_params, _session, socket) do
     socket =
       socket
+      |> assign(plans: Plans.list_plans())
       |> assign(:tasks, Tasks.list_unfinished_tasks())
       |> assign(:active_task, nil)
 
@@ -31,6 +33,7 @@ defmodule PlannerWeb.TasksLive do
         id: :all_unfinished_tasks,
         action: @live_action,
         tasks: @tasks,
+        plans: @plans,
         active_task: @active_task,
         route_show_task: &(Routes.tasks_path(&1, :show, &2)),
         route_edit_task: &(Routes.tasks_path(&1, :edit, &2)),

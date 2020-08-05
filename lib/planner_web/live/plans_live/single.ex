@@ -30,6 +30,7 @@ defmodule PlannerWeb.PlansLive.Single do
 
   defp fetch_plan(%Socket{assigns: %{plan_id: plan_id}} = socket) do
     socket
+    |> assign(plans: Plans.list_plans())
     |> assign(plan: Plans.get_plan!(plan_id))
     |> assign(tasks: Plans.get_tasks(plan_id))
     |> assign(active_task: nil)
@@ -49,6 +50,7 @@ defmodule PlannerWeb.PlansLive.Single do
           id: :all_unfinished_tasks,
           action: %{show_task: :show, edit_task: :edit}[@live_action],
           tasks: @tasks,
+          plans: @plans,
           active_task: @active_task,
           route_show_task: &(Routes.plans_single_path(&1, :show_task, @plan, &2)),
           route_edit_task: &(Routes.plans_single_path(&1, :edit_task, @plan, &2)),

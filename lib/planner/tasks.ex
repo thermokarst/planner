@@ -3,6 +3,8 @@ defmodule Planner.Tasks do
   alias Ecto.UUID
   alias Planner.Repo
   alias Planner.Tasks.Task
+  alias Planner.Plans.PlanDetail
+  alias Ecto.Multi
 
   def add_task(attrs) do
     attrs =
@@ -23,6 +25,7 @@ defmodule Planner.Tasks do
       order_by: [desc: t.updated_at]
     )
     |> Repo.all()
+    |> Repo.preload(:plans)
   end
 
   def list_finished_tasks do
@@ -53,9 +56,22 @@ defmodule Planner.Tasks do
       attrs
       |> cast_finished_at()
 
-    task
-    |> Task.changeset(attrs)
-    |> Repo.update()
+    task_changeset = Task.changeset(task, attrs)
+
+    pd_attrs = Enum.map(attrs["plans"], &(%{"task_id" => attrs["id"], "plan_id" => &1, "sort" => 0}))
+    plan_changesets = Enum.map(pd_attrs, &(PlanDetail.changeset(%PlanDetail{}, &1)))
+    multi = Enum.reduce(plan_changesets, Multi.new() |> Multi.update(:task, task_changeset),
+      fn(changeset, new_multi) ->
+      Multi.insert(
+        new_multi,
+        changeset.params["plan_id"],
+        changeset,
+        on_conflict: :nothing,
+      )
+    end)
+
+    {:ok, results} = Repo.transaction(multi)
+    {:ok, results[:task]}
   end
 
   def get_task!(id), do: Repo.get!(Task, id)

@@ -6,8 +6,8 @@ defmodule Planner.Plans.PlanDetail do
   @foreign_key_type :binary_id
   schema "plan_details" do
     field :sort, :integer
-    field :task_id, :binary_id
-    field :plan_id, :binary_id
+    field :task_id, :binary_id, primary_key: true
+    field :plan_id, :binary_id, primary_key: true
   end
 
   @doc false
