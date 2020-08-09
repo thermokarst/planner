@@ -52,11 +52,9 @@ defmodule PlannerWeb.Router do
   scope "/", PlannerWeb do
     pipe_through([:browser, :require_authenticated_user])
 
-    live("/", LandingLive, :index)
-
-    live("/tasks", TasksLive, :index)
-    live("/tasks/:id", TasksLive, :show)
-    live("/tasks/:id/edit", TasksLive, :edit)
+    live("/", TasksLive, :index)
+    live("/:id", TasksLive, :show)
+    live("/:id/edit", TasksLive, :edit)
 
     resources("/tasks-old", TaskController)
 
