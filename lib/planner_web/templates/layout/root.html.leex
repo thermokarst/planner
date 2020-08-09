@@ -11,7 +11,7 @@
   <body>
     <nav class="navbar is-dark mb-5" role="navigation">
       <div class="navbar-brand">
-        <%= link "planner", to: Routes.landing_path(@conn, :index), class: "navbar-item has-text-weight-bold hast-text-info-light" %>
+        <%= link "planner", to: Routes.tasks_path(@conn, :index), class: "navbar-item has-text-weight-bold hast-text-info-light" %>
 
         <a role="button" class="navbar-burger burger" data-target="nvbr">
           <span></span>
@@ -21,9 +21,7 @@
       </div>
 
       <div id="nvbr" class="navbar-menu">
-        <div class="navbar-start">
-          <%= link "tasks", to: Routes.tasks_path(@conn, :index), class: "navbar-item" %>
-        </div>
+        <div class="navbar-start"></div>
 
         <div class="navbar-end">
           <%= link "log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "navbar-item" %>

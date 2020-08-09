@@ -41,8 +41,9 @@ defmodule TasksComponent do
             task: task,
             live_action: @live_action,
             is_active: @active_task == task.id,
-            route_func_2: @route_func_2,
-            route_func_3: @route_func_3
+            route_show_task: @route_show_task,
+            route_edit_task: @route_edit_task,
+            route_index_tasks: @route_index_tasks
           )%>
         <% end %>
       </ul>
@@ -77,8 +78,8 @@ defmodule TaskComponent do
                   TaskDetailsComponent,
                   id: "task_details:#{@task.id}",
                   task: @task,
-                  route_func_2: @route_func_2,
-                  route_func_3: @route_func_3
+                  route_index_tasks: @route_index_tasks,
+                  route_edit_task: @route_edit_task
                 )%>
               <% :edit -> %>
                  <%= live_component(@socket,
@@ -88,7 +89,7 @@ defmodule TaskComponent do
                 )%>
               <% end %>
           <% else %>
-            <%= live_patch(to: @route_func_3.(@socket, :show, @task.id),
+            <%= live_patch(to: @route_show_task.(@socket, @task.id),
               style: "display: block;"
             ) do %>
               <div class="value ">
@@ -117,7 +118,7 @@ defmodule TaskDetailsComponent do
     ~L"""
     <div class="box">
       <%= live_patch("",
-        to: @route_func_2.(@socket, :index),
+        to: @route_index_tasks.(@socket),
         class: "delete is-pulled-right"
       ) %>
       <%= if(not is_nil(@task.due_at) or is_nil(@task.filed_at)) do %>
@@ -145,7 +146,7 @@ defmodule TaskDetailsComponent do
 
       <div class="buttons has-addons">
         <%= live_patch("edit",
-          to: @route_func_3.(@socket, :edit, @task.id),
+          to: @route_edit_task.(@socket, @task.id),
           class: "button is-dark is-small"
         ) %>
         <a
