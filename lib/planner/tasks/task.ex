@@ -13,7 +13,6 @@ defmodule Planner.Tasks.Task do
     timestamps()
   end
 
-  @doc false
   def changeset(task, attrs) do
     task
     |> cast(attrs, [:value, :filed_at, :finished_at, :due_at])
@@ -21,10 +20,10 @@ defmodule Planner.Tasks.Task do
     |> validate_length(:value, min: 3)
   end
 
-  @doc false
   def finish_task(task) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     # TODO, this should check if `finished_at` is not nil, first
-    change(task, finished_at: now)
+    change(task, finished_at: now())
   end
+
+  defp now(), do: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 end

@@ -7,16 +7,6 @@ defmodule Planner.Tasks do
   alias Planner.Tasks.Plan
   alias Planner.Tasks.PlanDetail
 
-  def add_task(attrs) do
-    attrs =
-      attrs
-      |> cast_finished_at()
-
-    %Task{}
-    |> Task.changeset(attrs)
-    |> Repo.insert()
-  end
-
   def list_all_tasks, do: Repo.all(Task)
 
   def list_unfinished_tasks do
@@ -37,38 +27,31 @@ defmodule Planner.Tasks do
     |> Repo.all()
   end
 
-  def change_task(%Task{} = task) do
-    task
-    |> Task.changeset(%{})
-  end
+  def get_task!(id), do: Repo.get!(Task, id)
 
-  def cast_finished_at(attrs) do
-    attrs
-    |> Map.update("finished_at", nil, fn
-      "true" -> NaiveDateTime.utc_now()
-      "false" -> nil
-      val -> val
-    end)
+  def create_task(attrs \\ %{}) do
+    %Task{}
+    |> Task.changeset(attrs)
+    |> Repo.insert()
   end
 
   def update_task(%Task{} = task, attrs) do
-    attrs =
-      attrs
-      |> cast_finished_at()
-
     task
     |> Task.changeset(attrs)
     |> Repo.update()
   end
 
-  def get_task!(id), do: Repo.get!(Task, id)
-
-  def exists?(id), do: Repo.exists?(from(t in Task, where: t.id == ^id))
-
   def delete_task_by_id!(id) do
     get_task!(id)
     |> Repo.delete()
   end
+
+  def change_task(%Task{} = task) do
+    task
+    |> Task.changeset(%{})
+  end
+
+  def task_exists?(id), do: Repo.exists?(from(t in Task, where: t.id == ^id))
 
   def finish_task_by_id!(id) do
     get_task!(id)
@@ -86,7 +69,7 @@ defmodule Planner.Tasks do
 
     case task_id do
       :error -> :error
-      _ -> exists?(task_id)
+      _ -> task_exists?(task_id)
     end
   end
 

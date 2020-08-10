@@ -214,18 +214,6 @@ defmodule TaskEditComponent do
           <%= error_tag(f, :due_at) %>
         </div>
 
-        <div class="field">
-          <%= label(f, :finished_at, class: "label") do %>
-            <%= if(is_nil(@task.finished_at)) do %>
-              <%= checkbox(f, :finished_at) %>
-            <% else %>
-              <%= checkbox(f, :finished_at, checked_value: @task.finished_at) %>
-            <% end %>
-            finished
-          <% end %>
-          <%= error_tag(f, :finished_at) %>
-        </div>
-
         <div class="control">
           <%= submit("save", class: "button is-dark is-small") %>
         </div>
