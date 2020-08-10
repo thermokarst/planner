@@ -12,7 +12,7 @@ defmodule PlannerWeb.TasksLive do
     {:ok, socket}
   end
 
-  def handle_params(%{"id" => task_id}, _, socket) do
+  def handle_params(%{"task_id" => task_id}, _, socket) do
     case Tasks.verify_task_id_from_url(task_id) do
       true -> {:noreply, assign(socket, :active_task, task_id)}
       _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
@@ -76,7 +76,7 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_event("new-task", %{"task" => task_params}, socket) do
-    case Tasks.add_task(task_params) do
+    case Tasks.create_task(task_params) do
       {:ok, task} ->
         socket =
           socket
