@@ -6,6 +6,7 @@ defmodule PlannerWeb.TasksLive do
   def mount(_params, _session, socket) do
     socket =
       socket
+      |> assign(:plans, Tasks.list_plans())
       |> assign(:tasks, Tasks.list_unfinished_tasks())
       |> assign(:active_task, nil)
 
@@ -25,17 +26,32 @@ defmodule PlannerWeb.TasksLive do
 
   def render(assigns) do
     ~L"""
-    <div phx-window-keydown="keydown" phx-key="Escape">
-      <%= live_component(@socket,
-        TasksComponent,
-        id: :all_unfinished_tasks,
-        live_action: @live_action,
-        tasks: @tasks,
-        active_task: @active_task,
-        route_show_task: &(Routes.tasks_path(&1, :show, &2)),
-        route_edit_task: &(Routes.tasks_path(&1, :edit, &2)),
-        route_index_tasks: &(Routes.tasks_path(&1, :index))
-      )%>
+    <div class="columns">
+      <div class="column is-one-quarter">
+        <h4 class="title is-4">plans</h4>
+        <div class="content">
+          <ul>
+            <%= for plan <- @plans do %>
+              <li>
+                <%= live_patch(plan.name, to: Routes.tasks_path(@socket, :show_plan, plan.id)) %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <div class="column" phx-window-keydown="keydown" phx-key="Escape">
+        <h4 class="title is-4">tasks</h4>
+        <%= live_component(@socket,
+          TasksComponent,
+          id: :all_unfinished_tasks,
+          live_action: @live_action,
+          tasks: @tasks,
+          active_task: @active_task,
+          route_show_task: &(Routes.tasks_path(&1, :show_task, &2)),
+          route_edit_task: &(Routes.tasks_path(&1, :edit_task, &2)),
+          route_index_tasks: &(Routes.tasks_path(&1, :index))
+        )%>
+      </div>
     </div>
     """
   end
