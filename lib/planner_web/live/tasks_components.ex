@@ -73,7 +73,7 @@ defmodule TaskComponent do
         <div class="ml-5-5">
           <%= if(@is_active) do %>
             <%= case @live_action do %>
-              <% :show -> %>
+              <% :show_task -> %>
                 <%= live_component(@socket,
                   TaskDetailsComponent,
                   id: "task_details:#{@task.id}",
@@ -81,7 +81,7 @@ defmodule TaskComponent do
                   route_index_tasks: @route_index_tasks,
                   route_edit_task: @route_edit_task
                 )%>
-              <% :edit -> %>
+              <% :edit_task -> %>
                  <%= live_component(@socket,
                   TaskEditComponent,
                   id: "task_edit:#{@task.id}",

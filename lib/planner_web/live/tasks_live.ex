@@ -8,19 +8,39 @@ defmodule PlannerWeb.TasksLive do
       socket
       |> assign(:plans, Tasks.list_plans())
       |> assign(:tasks, Tasks.list_unfinished_tasks())
+      |> assign(:active_plan, nil)
       |> assign(:active_task, nil)
+      |> assign(:route_show_task, &(Routes.tasks_path(&1, :show_task, &2)))
+      |> assign(:route_edit_task, &(Routes.tasks_path(&1, :edit_task, &2)))
+      |> assign(:route_index_tasks, &(Routes.tasks_path(&1, :index)))
 
     {:ok, socket}
   end
 
+  # plan: yes, task: yes
+  def handle_params(%{"plan_id" => plan_id, "task_id" => task_id}, _, socket) do
+    IO.inspect("plan: yes, task: yes")
+    {:noreply, socket}
+  end
+
+  # plan: no, task: yes
   def handle_params(%{"task_id" => task_id}, _, socket) do
+    IO.inspect("plan: no, task: yes")
     case Tasks.verify_task_id_from_url(task_id) do
       true -> {:noreply, assign(socket, :active_task, task_id)}
       _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
     end
   end
 
+  # plan: yes, task: no
+  def handle_params(%{"plan_id" => plan_id}, _, socket) do
+    IO.inspect("plan: yes, task: no")
+    {:noreply, assign(socket, :active_plan, plan_id)}
+  end
+
+  # plan: no, task: no
   def handle_params(_, _, socket) do
+    IO.inspect("plan: no, task: no")
     {:noreply, assign(socket, :active_task, nil)}
   end
 
@@ -41,16 +61,21 @@ defmodule PlannerWeb.TasksLive do
       </div>
       <div class="column" phx-window-keydown="keydown" phx-key="Escape">
         <h4 class="title is-4">tasks</h4>
-        <%= live_component(@socket,
-          TasksComponent,
-          id: :all_unfinished_tasks,
-          live_action: @live_action,
-          tasks: @tasks,
-          active_task: @active_task,
-          route_show_task: &(Routes.tasks_path(&1, :show_task, &2)),
-          route_edit_task: &(Routes.tasks_path(&1, :edit_task, &2)),
-          route_index_tasks: &(Routes.tasks_path(&1, :index))
-        )%>
+        <%= case @active_plan do %>
+          <%= nil -> %>
+            <%= live_component(@socket,
+              TasksComponent,
+              id: :all_unfinished_tasks,
+              live_action: @live_action,
+              tasks: @tasks,
+              active_task: @active_task,
+              route_show_task: @route_show_task,
+              route_edit_task: @route_edit_task,
+              route_index_tasks: @route_index_tasks
+            )%>
+          <% _ -> %>
+            hello
+          <% end %>
       </div>
     </div>
     """
