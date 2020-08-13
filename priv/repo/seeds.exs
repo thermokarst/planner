@@ -13,7 +13,7 @@ tasks_records = [
 
 tasks =
   Enum.map(tasks_records, fn record ->
-    {:ok, task} = Tasks.add_task(record)
+    {:ok, task} = Tasks.create_task(record)
     task
   end)
 

@@ -18,6 +18,19 @@ defmodule Planner.Tasks do
     |> Repo.all()
   end
 
+  def list_unfinished_tasks_by_plan_id(plan_id) do
+    q =
+      Ecto.Query.from(
+        t in Task,
+        join: pd in PlanDetail,
+        on: t.id == pd.task_id,
+        where: pd.plan_id == ^plan_id
+      )
+
+    Repo.all(q)
+    |> Repo.preload(:plans)
+  end
+
   def list_finished_tasks do
     from(
       t in Task,
@@ -77,6 +90,15 @@ defmodule Planner.Tasks do
     Repo.all(Plan)
   end
 
+  def list_unfinished_plans do
+    from(
+      p in Plan,
+      where: p.done == false,
+      order_by: [desc: p.updated_at]
+    )
+    |> Repo.all()
+  end
+
   def get_plan!(id), do: Repo.get!(Plan, id)
 
   def create_plan(attrs \\ %{}) do
@@ -97,6 +119,22 @@ defmodule Planner.Tasks do
 
   def change_plan(%Plan{} = plan, attrs \\ %{}) do
     Plan.changeset(plan, attrs)
+  end
+
+  def plan_exists?(id), do: Repo.exists?(from(p in Plan, where: p.id == ^id))
+
+  def verify_plan_id_from_url(plan_id) do
+    plan_id =
+      case UUID.dump(plan_id) do
+        # don't actually want the dumped UUID, so discard
+        {:ok, _} -> plan_id
+        :error -> :error
+      end
+
+    case plan_id do
+      :error -> :error
+      _ -> plan_exists?(plan_id)
+    end
   end
 
   def list_plan_details do

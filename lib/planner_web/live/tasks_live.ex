@@ -6,13 +6,7 @@ defmodule PlannerWeb.TasksLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:plans, Tasks.list_plans())
-      |> assign(:tasks, Tasks.list_unfinished_tasks())
-      |> assign(:active_plan, nil)
-      |> assign(:active_task, nil)
-      |> assign(:route_show_task, &(Routes.tasks_path(&1, :show_task, &2)))
-      |> assign(:route_edit_task, &(Routes.tasks_path(&1, :edit_task, &2)))
-      |> assign(:route_index_tasks, &(Routes.tasks_path(&1, :index)))
+      |> assign(:plans, Tasks.list_unfinished_plans())
 
     {:ok, socket}
   end
@@ -20,14 +14,47 @@ defmodule PlannerWeb.TasksLive do
   # plan: yes, task: yes
   def handle_params(%{"plan_id" => plan_id, "task_id" => task_id}, _, socket) do
     IO.inspect("plan: yes, task: yes")
-    {:noreply, socket}
+
+    case Tasks.verify_plan_id_from_url(plan_id) do
+      true ->
+        case Tasks.verify_task_id_from_url(task_id) do
+          true ->
+            socket =
+              socket
+              |> assign(:active_task, task_id)
+              |> assign(:active_plan, Tasks.get_plan!(plan_id))
+              |> assign(:tasks, Tasks.list_unfinished_tasks_by_plan_id(plan_id))
+              |> assign(:route_show_task, &Routes.tasks_path(&1, :show_task, plan_id, &2))
+              |> assign(:route_edit_task, &Routes.tasks_path(&1, :edit_task, plan_id, &2))
+              |> assign(:route_index_tasks, &Routes.tasks_path(&1, :show_plan, plan_id))
+
+            {:noreply, socket}
+
+          _ ->
+            {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+        end
+
+      _ ->
+        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+    end
   end
 
   # plan: no, task: yes
   def handle_params(%{"task_id" => task_id}, _, socket) do
     IO.inspect("plan: no, task: yes")
+
     case Tasks.verify_task_id_from_url(task_id) do
-      true -> {:noreply, assign(socket, :active_task, task_id)}
+      true ->
+        socket =
+          socket
+          |> assign(:active_task, task_id)
+          |> assign(:active_plan, nil)
+          |> assign(:tasks, Tasks.list_unfinished_tasks())
+          |> assign(:route_show_task, &Routes.tasks_path(&1, :show_task, &2))
+          |> assign(:route_edit_task, &Routes.tasks_path(&1, :edit_task, &2))
+          |> assign(:route_index_tasks, &Routes.tasks_path(&1, :index))
+
+        {:noreply, assign(socket, :active_task, task_id)}
       _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
     end
   end
@@ -35,13 +62,39 @@ defmodule PlannerWeb.TasksLive do
   # plan: yes, task: no
   def handle_params(%{"plan_id" => plan_id}, _, socket) do
     IO.inspect("plan: yes, task: no")
-    {:noreply, assign(socket, :active_plan, plan_id)}
+
+    case Tasks.verify_plan_id_from_url(plan_id) do
+      true ->
+        socket =
+          socket
+          |> assign(:active_task, nil)
+          |> assign(:active_plan, Tasks.get_plan!(plan_id))
+          |> assign(:tasks, Tasks.list_unfinished_tasks_by_plan_id(plan_id))
+          |> assign(:route_show_task, &Routes.tasks_path(&1, :show_task, plan_id, &2))
+          |> assign(:route_edit_task, &Routes.tasks_path(&1, :edit_task, plan_id, &2))
+          |> assign(:route_index_tasks, &Routes.tasks_path(&1, :show_plan, plan_id))
+
+        {:noreply, socket}
+
+      _ ->
+        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+    end
   end
 
   # plan: no, task: no
   def handle_params(_, _, socket) do
     IO.inspect("plan: no, task: no")
-    {:noreply, assign(socket, :active_task, nil)}
+
+    socket =
+      socket
+      |> assign(:active_task, nil)
+      |> assign(:active_plan, nil)
+      |> assign(:tasks, Tasks.list_unfinished_tasks())
+      |> assign(:route_show_task, &Routes.tasks_path(&1, :show_task, &2))
+      |> assign(:route_edit_task, &Routes.tasks_path(&1, :edit_task, &2))
+      |> assign(:route_index_tasks, &Routes.tasks_path(&1, :index))
+
+    {:noreply, socket}
   end
 
   def render(assigns) do
@@ -51,6 +104,9 @@ defmodule PlannerWeb.TasksLive do
         <h4 class="title is-4">plans</h4>
         <div class="content">
           <ul>
+            <li>
+              <%= live_patch("all unfinished", to: Routes.tasks_path(@socket, :index)) %>
+            </li>
             <%= for plan <- @plans do %>
               <li>
                 <%= live_patch(plan.name, to: Routes.tasks_path(@socket, :show_plan, plan.id)) %>
@@ -60,22 +116,24 @@ defmodule PlannerWeb.TasksLive do
         </div>
       </div>
       <div class="column" phx-window-keydown="keydown" phx-key="Escape">
-        <h4 class="title is-4">tasks</h4>
         <%= case @active_plan do %>
           <%= nil -> %>
-            <%= live_component(@socket,
-              TasksComponent,
-              id: :all_unfinished_tasks,
-              live_action: @live_action,
-              tasks: @tasks,
-              active_task: @active_task,
-              route_show_task: @route_show_task,
-              route_edit_task: @route_edit_task,
-              route_index_tasks: @route_index_tasks
-            )%>
-          <% _ -> %>
-            hello
+            <h4 class="title is-4">all unfinished</h4>
+         <% _ -> %>
+            <h4 class="title is-4">
+              <%= @active_plan.name %>
+            </h4>
           <% end %>
+          <%= live_component(@socket,
+            TasksComponent,
+            id: :tasks,
+            live_action: @live_action,
+            tasks: @tasks,
+            active_task: @active_task,
+            route_show_task: @route_show_task,
+            route_edit_task: @route_edit_task,
+            route_index_tasks: @route_index_tasks
+          )%>
       </div>
     </div>
     """

@@ -14,6 +14,6 @@ defmodule Planner.Tasks.PlanDetail do
 
   def changeset(plan_detail, attrs) do
     plan_detail
-    |> cast(attrs, [:sort])
+    |> cast(attrs, [:sort, :task_id, :plan_id])
   end
 end

@@ -10,6 +10,8 @@ defmodule Planner.Tasks.Task do
     field(:finished_at, :naive_datetime)
     field(:due_at, :naive_datetime)
 
+    many_to_many(:plans, Planner.Tasks.Plan, join_through: "plan_details")
+
     timestamps()
   end
 
