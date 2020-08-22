@@ -102,18 +102,18 @@ defmodule PlannerWeb.TasksLive do
     <div class="columns">
       <div class="column is-one-quarter">
         <h4 class="title is-4">plans</h4>
-        <div class="content">
-          <ul>
-            <li>
-              <%= live_patch("all unfinished", to: Routes.tasks_path(@socket, :index)) %>
-            </li>
+          <nav class="panel">
+            <%= live_patch("all unfinished", to: Routes.tasks_path(@socket, :index), class: "panel-block") %>
             <%= for plan <- @plans do %>
-              <li id="<%= plan.id %>" phx-hook="Dropper" data-plan-id="<%= plan.id %>">
-                <%= live_patch(plan.name, to: Routes.tasks_path(@socket, :show_plan, plan.id)) %>
-              </li>
+              <%= live_patch(
+                plan.name,
+                to: Routes.tasks_path(@socket, :show_plan, plan.id),
+                class: "panel-block",
+                phx_hook: "Dropper",
+                data_plan_id: plan.id
+              ) %>
             <% end %>
-          </ul>
-        </div>
+          </nav>
       </div>
       <div class="column" phx-window-keydown="keydown" phx-key="Escape">
         <%= case @active_plan do %>

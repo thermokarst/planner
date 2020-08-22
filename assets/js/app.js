@@ -24,7 +24,7 @@ Hooks.Dragger = {
   mounted() {
     this.el.addEventListener("dragstart", event => {
       event.target.style.opacity = 0.4
-      event.dataTransfer.setData("text/plain", this.el.dataset.taskId)
+      event.dataTransfer.setData("text/plain", `task-id:${this.el.dataset.taskId}`)
     })
     this.el.addEventListener("dragend", event => {
       event.target.style.opacity = 1.0
@@ -33,13 +33,24 @@ Hooks.Dragger = {
 }
 
 Hooks.Dropper = {
+  parseTaskPayload(payload) {
+    if (payload.startsWith('task-id:')) {
+      return payload.split(':')[1]
+    }
+    return null
+  },
+
   mounted() {
     this.el.addEventListener("drop", event => {
       event.preventDefault()
       event.target.style.background = ""
-      const taskId = event.dataTransfer.getData("text/plain")
-      const planId = this.el.dataset.planId
-      this.pushEvent("add-task-to-plan", {"task-id": taskId, "plan-id": planId})
+      const payload = event.dataTransfer.getData("text/plain")
+      const taskId = this.parseTaskPayload(payload)
+      if (taskId !== null) {
+        const planId = this.el.dataset.planId
+        this.pushEvent("add-task-to-plan", {"task-id": taskId, "plan-id": planId})
+        event.target.classList.remove("has-background-warning")
+      }
     })
 
     this.el.addEventListener("dragover", event => {
@@ -47,11 +58,19 @@ Hooks.Dropper = {
     })
 
     this.el.addEventListener("dragenter", event => {
-      event.target.style.background = "yellow"
+      const payload = event.dataTransfer.getData("text/plain")
+      const taskId = this.parseTaskPayload(payload)
+      if (taskId !== null) {
+        event.target.classList.add("has-background-warning")
+      }
     })
 
     this.el.addEventListener("dragleave", event => {
-      event.target.style.background = ""
+      const payload = event.dataTransfer.getData("text/plain")
+      const taskId = this.parseTaskPayload(payload)
+      if (taskId !== null) {
+        event.target.classList.remove("has-background-warning")
+      }
     })
   }
 }
