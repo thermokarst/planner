@@ -13,5 +13,6 @@ defmodule Planner.Repo.Migrations.CreatePlanDetails do
 
     create index(:plan_details, [:task_id])
     create index(:plan_details, [:plan_id])
+    create unique_index(:plan_details, [:task_id, :plan_id])
   end
 end

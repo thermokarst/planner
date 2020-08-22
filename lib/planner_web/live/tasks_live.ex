@@ -108,7 +108,7 @@ defmodule PlannerWeb.TasksLive do
               <%= live_patch("all unfinished", to: Routes.tasks_path(@socket, :index)) %>
             </li>
             <%= for plan <- @plans do %>
-              <li>
+              <li id="<%= plan.id %>" phx-hook="Dropper" data-plan-id="<%= plan.id %>">
                 <%= live_patch(plan.name, to: Routes.tasks_path(@socket, :show_plan, plan.id)) %>
               </li>
             <% end %>
@@ -187,6 +187,11 @@ defmodule PlannerWeb.TasksLive do
         send_update(TasksComponent, id: :all_unfinished_tasks, changeset: changeset)
         {:noreply, socket}
     end
+  end
+
+  def handle_event("add-task-to-plan", %{"task-id" => task_id, "plan-id" => plan_id}, socket) do
+    {_, plan_detail} = Tasks.create_plan_detail(%{"task_id" => task_id, "plan_id" => plan_id})
+    {:noreply, socket}
   end
 
   defp refresh_tasks_and_flash_msg(socket, msg) do

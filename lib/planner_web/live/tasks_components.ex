@@ -92,7 +92,7 @@ defmodule TaskComponent do
             <%= live_patch(to: @route_show_task.(@socket, @task.id),
               style: "display: block;"
             ) do %>
-              <div class="value ">
+              <div class="value">
                 <%= md_to_html(@task.value) %>
               </div>
             <% end %>
@@ -116,7 +116,7 @@ defmodule TaskDetailsComponent do
 
   def render(assigns) do
     ~L"""
-    <div class="box">
+    <div class="box" id="task-details-<%= @task.id %>" draggable="true" phx-hook="Dragger" data-task-id="<%= @task.id %>">
       <%= live_patch("",
         to: @route_index_tasks.(@socket),
         class: "delete is-pulled-right"
