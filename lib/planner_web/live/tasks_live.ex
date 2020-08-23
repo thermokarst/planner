@@ -109,16 +109,17 @@ defmodule PlannerWeb.TasksLive do
       <div class="column">
         <%= case @active_plan do %>
           <%= nil -> %>
-            <h4 class="title is-4">all unfinished</h4>
+            <h4 class="title is-4">all unfinished tasks</h4>
          <% _ -> %>
             <h4 class="title is-4">
-            <button
-              type="button"
-              role="checkbox"
-              class="doit"
-              phx-click="finish-plan"
-              phx-value-plan-id="<%= @active_plan.id %>">
-            </button>
+              <button
+                type="button"
+                role="checkbox"
+                class="doit"
+                phx-click="finish-plan"
+                phx-value-plan-id="<%= @active_plan.id %>">
+              </button>
+              &nbsp;
               <%= @active_plan.name %>
             </h4>
           <% end %>
