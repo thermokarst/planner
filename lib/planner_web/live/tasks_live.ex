@@ -79,7 +79,7 @@ defmodule PlannerWeb.TasksLive do
 
   def render(assigns) do
     ~L"""
-    <div class="columns">
+    <div class="columns" phx-window-keydown="keydown" phx-key="Escape">
       <div class="column is-one-quarter">
         <h4 class="title is-4">plans</h4>
           <nav class="panel">
@@ -95,7 +95,7 @@ defmodule PlannerWeb.TasksLive do
             <% end %>
           </nav>
       </div>
-      <div class="column" phx-window-keydown="keydown" phx-key="Escape">
+      <div class="column">
         <%= case @active_plan do %>
           <%= nil -> %>
             <h4 class="title is-4">all unfinished</h4>
