@@ -75,7 +75,7 @@ Hooks.AddDropper = {
       const taskID = this.parseTaskPayload(payload)
       if (taskID !== null) {
         const planID = this.el.dataset.planId
-        this.addTaskToPlan({ "task-id": taskID, "plan-id": planID, })
+        this.addTaskToPlan({ "task_id": taskID, "plan_id": planID, })
         this.removeHoverClass(event)
       }
     })
@@ -124,7 +124,7 @@ Hooks.DeleteDropper = {
       const taskID = this.parseTaskPayload(payload)
       if (taskID !== null) {
         const planID = this.el.dataset.drop
-        this.deleteTaskFromPlan({ "task-id": taskID, "plan-id": planID, })
+        this.deleteTaskFromPlan({ "task_id": taskID, "plan_id": planID, })
         this.removeHoverClass(event)
       }
     })
