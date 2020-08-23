@@ -34,16 +34,14 @@ defmodule TasksComponent do
       </form>
 
       <%= if(!is_nil(@active_plan)) do %>
-        <div id="deleter" class="field" hidden=true>
-          <input
-           type="text"
-           placeholder="remove task from plan"
-           class="input is-danger"
-           phx-hook="Dropper"
-           data-drop="<%= @active_plan.id %>"
-           readonly
-           />
-        </div>
+        <div
+          id="deleter"
+          phx-hook="Dropper"
+          data-drop="<%= @active_plan.id %>"
+          class="has-background-danger"
+          style="height: 38px; width: 100%"
+          hidden=true
+        ></div>
       <% end %>
 
       <ul class="tasks">

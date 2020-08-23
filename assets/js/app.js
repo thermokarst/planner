@@ -22,28 +22,42 @@ let Hooks = {}
 
 Hooks.Dragger = {
   toggleAddDelete() {
-      const adder = document.getElementById('adder')
       const deleter = document.getElementById('deleter')
       if (deleter) {
+        const adder = document.getElementById('adder')
         deleter.hidden = adder.hidden
         adder.hidden = !adder.hidden
       }
   },
 
+  // TODO: change this image to something simpler
+  get dragImage() {
+    const canvas = document.createElement("canvas")
+    canvas.width = canvas.height = 50
+    const ctx = canvas.getContext("2d")
+    ctx.lineWidth = 4
+    ctx.moveTo(0, 0)
+    ctx.lineTo(50, 50)
+    ctx.moveTo(0, 50)
+    ctx.lineTo(50, 0)
+    ctx.stroke()
+    return canvas
+  },
+
   mounted() {
     this.el.addEventListener("dragstart", event => {
-      event.target.classList.add("has-background-warning")
       event.dataTransfer.setData("text/plain", `task-id:${this.el.dataset.taskId}`)
+      event.dataTransfer.setDragImage(this.dragImage, 25, 25)
       this.toggleAddDelete()
     })
 
     this.el.addEventListener("dragend", event => {
-      event.target.classList.remove("has-background-warning")
       this.toggleAddDelete()
     })
   },
 }
 
+// TODO: split this into two separate hooks
 Hooks.Dropper = {
   parseTaskPayload(payload) {
     if (payload.startsWith('task-id:')) {
@@ -77,6 +91,7 @@ Hooks.Dropper = {
       const payload = event.dataTransfer.getData("text/plain")
       const taskId = this.parseTaskPayload(payload)
       if (taskId !== null) {
+        event.target.classList.remove("has-background-danger")
         event.target.classList.add("has-background-warning")
       }
     })
@@ -86,6 +101,9 @@ Hooks.Dropper = {
       const taskId = this.parseTaskPayload(payload)
       if (taskId !== null) {
         event.target.classList.remove("has-background-warning")
+        if (this.el.dataset.drop) {
+          event.target.classList.add("has-background-danger")
+        }
       }
     })
   }
