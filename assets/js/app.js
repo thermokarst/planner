@@ -21,13 +21,25 @@ import LiveSocket from "phoenix_live_view"
 let Hooks = {}
 
 Hooks.Dragger = {
+  toggleAddDelete() {
+      const adder = document.getElementById('adder')
+      const deleter = document.getElementById('deleter')
+      if (deleter) {
+        deleter.hidden = adder.hidden
+        adder.hidden = !adder.hidden
+      }
+  },
+
   mounted() {
     this.el.addEventListener("dragstart", event => {
-      event.target.style.opacity = 0.4
+      event.target.classList.add("has-background-warning")
       event.dataTransfer.setData("text/plain", `task-id:${this.el.dataset.taskId}`)
+      this.toggleAddDelete()
     })
+
     this.el.addEventListener("dragend", event => {
-      event.target.style.opacity = 1.0
+      event.target.classList.remove("has-background-warning")
+      this.toggleAddDelete()
     })
   },
 }
@@ -43,12 +55,16 @@ Hooks.Dropper = {
   mounted() {
     this.el.addEventListener("drop", event => {
       event.preventDefault()
-      event.target.style.background = ""
       const payload = event.dataTransfer.getData("text/plain")
       const taskId = this.parseTaskPayload(payload)
       if (taskId !== null) {
-        const planId = this.el.dataset.planId
-        this.pushEvent("add-task-to-plan", {"task-id": taskId, "plan-id": planId})
+        const addPlanId = this.el.dataset.planId
+        if (addPlanId) {
+          this.pushEvent("add-task-to-plan", {"task-id": taskId, "plan-id": addPlanId})
+        } else {
+          const deletePlanId = this.el.dataset.drop
+          this.pushEvent("delete-task-from-plan", {"task-id": taskId, "plan-id": deletePlanId})
+        }
         event.target.classList.remove("has-background-warning")
       }
     })

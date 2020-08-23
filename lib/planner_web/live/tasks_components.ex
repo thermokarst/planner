@@ -21,7 +21,7 @@ defmodule TasksComponent do
     ~L"""
     <div class="content">
       <%= f = form_for(@changeset, "#", [phx_submit: "new-task"]) %>
-        <div class="field">
+        <div id="adder" class="field">
           <div class="control">
             <%= text_input(f,
               :value,
@@ -32,6 +32,19 @@ defmodule TasksComponent do
           <%= error_tag(f, :value) %>
         </div>
       </form>
+
+      <%= if(!is_nil(@active_plan)) do %>
+        <div id="deleter" class="field" hidden=true>
+          <input
+           type="text"
+           placeholder="remove task from plan"
+           class="input is-danger"
+           phx-hook="Dropper"
+           data-drop="<%= @active_plan.id %>"
+           readonly
+           />
+        </div>
+      <% end %>
 
       <ul class="tasks">
         <%= for task <- @tasks do %>

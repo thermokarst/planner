@@ -143,6 +143,8 @@ defmodule Planner.Tasks do
 
   def get_plan_detail!(id), do: Repo.get!(PlanDetail, id)
 
+  def get_plan_detail_by!(clauses), do: Repo.get_by!(PlanDetail, clauses)
+
   def create_plan_detail(attrs \\ %{}, on_conflict \\ :nothing) do
     %PlanDetail{}
     |> PlanDetail.changeset(attrs)

@@ -129,6 +129,7 @@ defmodule PlannerWeb.TasksLive do
             id: :tasks,
             live_action: @live_action,
             tasks: @tasks,
+            active_plan: @active_plan,
             active_task: @active_task,
             route_show_task: @route_show_task,
             route_edit_task: @route_edit_task,
@@ -174,6 +175,7 @@ defmodule PlannerWeb.TasksLive do
     {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" deleted")}
   end
 
+  # TODO: pickup here
   def handle_event("new-task", %{"task" => task_params}, socket) do
     case Tasks.create_task(task_params) do
       {:ok, task} ->
@@ -181,7 +183,7 @@ defmodule PlannerWeb.TasksLive do
           socket
           |> refresh_tasks_and_flash_msg("task \"#{task.value}\" created")
 
-        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :show, task.id))}
+        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :show_task, task.id))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         send_update(TasksComponent, id: :all_unfinished_tasks, changeset: changeset)
@@ -191,6 +193,15 @@ defmodule PlannerWeb.TasksLive do
 
   def handle_event("add-task-to-plan", %{"task-id" => task_id, "plan-id" => plan_id}, socket) do
     {_, plan_detail} = Tasks.create_plan_detail(%{"task_id" => task_id, "plan_id" => plan_id})
+    # TODO
+    IO.inspect(plan_detail)
+    {:noreply, socket}
+  end
+
+  def handle_event("delete-task-from-plan", %{"task-id" => task_id, "plan-id" => plan_id}, socket) do
+    plan_detail = Tasks.get_plan_detail_by!(task_id: task_id, plan_id: plan_id)
+    {_, plan_detail} = Tasks.delete_plan_detail(plan_detail)
+    # TODO
     {:noreply, socket}
   end
 
