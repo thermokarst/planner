@@ -55,7 +55,9 @@ defmodule PlannerWeb.TasksLive do
           |> assign(:route_index_tasks, &Routes.tasks_path(&1, :index))
 
         {:noreply, assign(socket, :active_task, task_id)}
-      _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+
+      _ ->
+        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
     end
   end
 
@@ -103,7 +105,7 @@ defmodule PlannerWeb.TasksLive do
       <div class="column is-one-quarter">
         <h4 class="title is-4">plans</h4>
           <nav class="panel">
-            <%= live_patch("all unfinished", to: Routes.tasks_path(@socket, :index), class: "panel-block") %>
+            <%= live_patch("all unfinished tasks", to: Routes.tasks_path(@socket, :index), class: "panel-block") %>
             <%= for plan <- @plans do %>
               <%= live_patch(
                 plan.name,
@@ -175,20 +177,8 @@ defmodule PlannerWeb.TasksLive do
     {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" deleted")}
   end
 
-  # TODO: pickup here
   def handle_event("new-task", %{"task" => task_params}, socket) do
-    case Tasks.create_task(task_params) do
-      {:ok, task} ->
-        socket =
-          socket
-          |> refresh_tasks_and_flash_msg("task \"#{task.value}\" created")
-
-        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :show_task, task.id))}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        send_update(TasksComponent, id: :all_unfinished_tasks, changeset: changeset)
-        {:noreply, socket}
-    end
+    add_new_task(task_params, socket.assigns.active_plan, socket)
   end
 
   def handle_event("add-task-to-plan", %{"task-id" => task_id, "plan-id" => plan_id}, socket) do
@@ -206,8 +196,36 @@ defmodule PlannerWeb.TasksLive do
   end
 
   defp refresh_tasks_and_flash_msg(socket, msg) do
+    tasks =
+      case socket.assigns.active_plan do
+        nil -> Tasks.list_unfinished_tasks()
+        plan -> Tasks.list_unfinished_tasks_by_plan_id(plan.id)
+      end
+
     socket
-    |> assign(:tasks, Tasks.list_unfinished_tasks())
+    |> assign(:tasks, tasks)
     |> put_flash(:info, msg)
+  end
+
+  defp add_new_task(task_params, active_plan = nil, socket) do
+    case Tasks.create_task(task_params) do
+      {:ok, task} ->
+        {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" created")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        send_update(TasksComponent, id: :tasks, changeset: changeset)
+        {:noreply, socket}
+    end
+  end
+
+  defp add_new_task(task_params, active_plan, socket) do
+    case Tasks.create_task_and_add_to_plan(task_params, active_plan) do
+      {:ok, %{plan_detail: _, task: task}} ->
+        {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" created")}
+
+      {:error, :task, %Ecto.Changeset{} = changeset, _} ->
+        send_update(TasksComponent, id: :tasks, changeset: changeset)
+        {:noreply, socket}
+    end
   end
 end

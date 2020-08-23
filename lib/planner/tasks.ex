@@ -1,6 +1,7 @@
 defmodule Planner.Tasks do
   import Ecto.Query
 
+  alias Ecto.Multi
   alias Ecto.UUID
   alias Planner.Repo
   alias Planner.Tasks.Task
@@ -46,6 +47,15 @@ defmodule Planner.Tasks do
     %Task{}
     |> Task.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_task_and_add_to_plan(task_attrs, plan) do
+    Multi.new()
+    |> Multi.insert(:task, Task.changeset(%Task{}, task_attrs))
+    |> Multi.run(:plan_detail, fn _repo, %{task: task} ->
+      create_plan_detail(%{"task_id" => task.id, "plan_id" => plan.id})
+    end)
+    |> Repo.transaction()
   end
 
   def update_task(%Task{} = task, attrs) do
