@@ -104,7 +104,7 @@ defmodule Planner.Tasks do
   def list_unfinished_plans do
     from(
       p in Plan,
-      where: p.done == false,
+      where: is_nil(p.finished_at),
       order_by: [desc: p.updated_at]
     )
     |> Repo.all()
@@ -133,6 +133,12 @@ defmodule Planner.Tasks do
   end
 
   def plan_exists?(id), do: Repo.exists?(from(p in Plan, where: p.id == ^id))
+
+  def finish_plan_by_id!(id) do
+    get_plan!(id)
+    |> Plan.finish_plan()
+    |> Repo.update()
+  end
 
   def verify_plan_id_from_url(plan_id) do
     plan_id =

@@ -112,6 +112,13 @@ defmodule PlannerWeb.TasksLive do
             <h4 class="title is-4">all unfinished</h4>
          <% _ -> %>
             <h4 class="title is-4">
+            <button
+              type="button"
+              role="checkbox"
+              class="doit"
+              phx-click="finish-plan"
+              phx-value-plan-id="<%= @active_plan.id %>">
+            </button>
               <%= @active_plan.name %>
             </h4>
           <% end %>
@@ -138,6 +145,13 @@ defmodule PlannerWeb.TasksLive do
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, plan_changeset: changeset)}
     end
+  end
+
+  def handle_event("finish-plan", %{"plan-id" => plan_id}, socket) do
+    {_, plan} = Tasks.finish_plan_by_id!(plan_id)
+    socket = put_flash(socket, :info, "finished plan \"#{plan.name}\"")
+    socket = assign(socket, plans: Tasks.list_unfinished_plans())
+    {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
   end
 
   def handle_event("keydown", _params, socket) do
