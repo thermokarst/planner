@@ -30,17 +30,15 @@ Hooks.Dragger = {
       }
   },
 
-  // TODO: change this image to something simpler
   get dragImage() {
     const canvas = document.createElement("canvas")
-    canvas.width = canvas.height = 50
+    canvas.width = canvas.height = 60
     const ctx = canvas.getContext("2d")
-    ctx.lineWidth = 4
-    ctx.moveTo(0, 0)
-    ctx.lineTo(50, 50)
-    ctx.moveTo(0, 50)
-    ctx.lineTo(50, 0)
-    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.arc(30, 30, 30, 0, 2 * Math.PI)
+    ctx.fill()
+
     return canvas
   },
 
