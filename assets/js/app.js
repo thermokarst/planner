@@ -57,54 +57,92 @@ Hooks.Dragger = {
   },
 }
 
-// TODO: split this into two separate hooks
-Hooks.Dropper = {
-  parseTaskPayload(payload) {
-    if (payload.startsWith('task-id:')) {
-      return payload.split(':')[1]
-    }
-    return null
+Hooks.AddDropper = {
+  get bgClass() { return "has-background-warning"},
+
+  addTaskToPlan(payload) { return this.pushEvent("add-task-to-plan", payload) },
+
+  getTaskPayload(event) { return event.dataTransfer.getData("text/plain") },
+
+  parseTaskPayload(payload) { return payload.startsWith("task-id:") ? payload.split(":")[1] : null },
+
+  addHoverClass(event) { event.target.classList.add(this.bgClass) },
+
+  removeHoverClass(event) { event.target.classList.remove(this.bgClass) },
+
+  mounted() {
+    this.el.addEventListener("drop", event => {
+      event.preventDefault()
+      const payload = this.getTaskPayload(event)
+      const taskID = this.parseTaskPayload(payload)
+      if (taskID !== null) {
+        const planID = this.el.dataset.planId
+        this.addTaskToPlan({ "task-id": taskID, "plan-id": planID, })
+        this.removeHoverClass(event)
+      }
+    })
+
+    this.el.addEventListener("dragover", event => event.preventDefault())
+
+    this.el.addEventListener("dragenter", event => {
+      const payload = this.getTaskPayload(event)
+      const taskID = this.parseTaskPayload(payload)
+      if (taskID !== null) { this.addHoverClass(event) }
+    })
+
+    this.el.addEventListener("dragleave", event => {
+      const payload = this.getTaskPayload(event)
+      const taskID = this.parseTaskPayload(payload)
+      if (taskID !== null) { this.removeHoverClass(event) }
+    })
+  }
+}
+
+Hooks.DeleteDropper = {
+  get hoverBGClass() { return "has-background-warning"},
+
+  get baseBGClass() { return "has-background-danger"},
+
+  deleteTaskFromPlan(payload) { return this.pushEvent("delete-task-from-plan", payload) },
+
+  getTaskPayload(event) { return event.dataTransfer.getData("text/plain") },
+
+  parseTaskPayload(payload) { return payload.startsWith("task-id:") ? payload.split(":")[1] : null },
+
+  addHoverClass(event) {
+    event.target.classList.add(this.hoverBGClass)
+    event.target.classList.remove(this.baseBGClass)
+  },
+
+  removeHoverClass(event) {
+    event.target.classList.remove(this.hoverBGClass)
+    event.target.classList.add(this.baseBGClass)
   },
 
   mounted() {
     this.el.addEventListener("drop", event => {
       event.preventDefault()
-      const payload = event.dataTransfer.getData("text/plain")
-      const taskId = this.parseTaskPayload(payload)
-      if (taskId !== null) {
-        const addPlanId = this.el.dataset.planId
-        if (addPlanId) {
-          this.pushEvent("add-task-to-plan", {"task-id": taskId, "plan-id": addPlanId})
-        } else {
-          const deletePlanId = this.el.dataset.drop
-          this.pushEvent("delete-task-from-plan", {"task-id": taskId, "plan-id": deletePlanId})
-        }
-        event.target.classList.remove("has-background-warning")
+      const payload = this.getTaskPayload(event)
+      const taskID = this.parseTaskPayload(payload)
+      if (taskID !== null) {
+        const planID = this.el.dataset.drop
+        this.deleteTaskFromPlan({ "task-id": taskID, "plan-id": planID, })
+        this.removeHoverClass(event)
       }
     })
 
-    this.el.addEventListener("dragover", event => {
-      event.preventDefault()
-    })
+    this.el.addEventListener("dragover", event => event.preventDefault())
 
     this.el.addEventListener("dragenter", event => {
-      const payload = event.dataTransfer.getData("text/plain")
-      const taskId = this.parseTaskPayload(payload)
-      if (taskId !== null) {
-        event.target.classList.remove("has-background-danger")
-        event.target.classList.add("has-background-warning")
-      }
+      const payload = this.getTaskPayload(event)
+      const taskID = this.parseTaskPayload(payload)
+      if (taskID !== null) { this.addHoverClass(event) }
     })
 
     this.el.addEventListener("dragleave", event => {
-      const payload = event.dataTransfer.getData("text/plain")
-      const taskId = this.parseTaskPayload(payload)
-      if (taskId !== null) {
-        event.target.classList.remove("has-background-warning")
-        if (this.el.dataset.drop) {
-          event.target.classList.add("has-background-danger")
-        }
-      }
+      const payload = this.getTaskPayload(event)
+      const taskID = this.parseTaskPayload(payload)
+      if (taskID !== null) { this.removeHoverClass(event) }
     })
   }
 }

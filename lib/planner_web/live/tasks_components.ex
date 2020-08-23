@@ -36,7 +36,7 @@ defmodule TasksComponent do
       <%= if(!is_nil(@active_plan)) do %>
         <div
           id="deleter"
-          phx-hook="Dropper"
+          phx-hook="DeleteDropper"
           data-drop="<%= @active_plan.id %>"
           class="has-background-danger"
           style="height: 38px; width: 100%"
