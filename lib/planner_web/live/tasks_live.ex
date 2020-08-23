@@ -2,9 +2,14 @@ defmodule PlannerWeb.TasksLive do
   use PlannerWeb, :live_view
 
   alias Planner.Tasks
+  alias Planner.Tasks.Plan
 
   def mount(_params, _session, socket) do
-   {:ok, assign(socket, :plans, Tasks.list_unfinished_plans())}
+    socket =
+    socket
+    |> assign(:plans, Tasks.list_unfinished_plans())
+    |> assign(:plan_changeset, Tasks.change_plan(%Plan{}))
+   {:ok, socket}
   end
 
   # plan: yes, task: yes
@@ -79,6 +84,16 @@ defmodule PlannerWeb.TasksLive do
       <div class="column is-one-quarter">
         <h4 class="title is-4">plans</h4>
           <nav class="panel">
+            <%= f = form_for(@plan_changeset, "#", phx_submit: "new-plan", class: "panel-block") %>
+              <div class="control">
+                <%= text_input(f,
+                  :name,
+                  placeholder: "add new plan",
+                  class: "input", autocomplete: "off"
+                )%>
+                <%= error_tag(f, :name) %>
+              </div>
+            </form>
             <%= live_patch("all unfinished tasks", to: Routes.tasks_path(@socket, :index), class: "panel-block") %>
             <%= for plan <- @plans do %>
               <%= live_patch(
@@ -114,6 +129,15 @@ defmodule PlannerWeb.TasksLive do
       </div>
     </div>
     """
+  end
+
+  def handle_event("new-plan", %{"plan" => plan_params}, socket) do
+    case Tasks.create_plan(plan_params) do
+      {:ok, _plan} ->
+        {:noreply, assign(socket, plans: Tasks.list_unfinished_plans())}
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, plan_changeset: changeset)}
+    end
   end
 
   def handle_event("keydown", _params, socket) do
