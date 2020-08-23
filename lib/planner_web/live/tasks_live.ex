@@ -117,11 +117,7 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_event("keydown", _params, socket) do
-    route =
-      case socket.assigns.active_plan do
-        nil -> Routes.tasks_path(socket, :index)
-        plan -> Routes.tasks_path(socket, :show_plan, plan.id)
-      end
+    route = get_index_route(socket)
 
     case socket.assigns.live_action do
       :index -> {:noreply, socket}
@@ -139,7 +135,9 @@ defmodule PlannerWeb.TasksLive do
           socket
           |> refresh_tasks_and_flash_msg("task \"#{task.value}\" updated")
 
-        {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :show, task.id))}
+        route = get_index_route(socket)
+
+        {:noreply, push_patch(socket, to: route)}
 
       {:error, changeset} ->
         send_update(TaskEditComponent, id: "task_edit:#{task.id}", changeset: changeset)
@@ -154,7 +152,10 @@ defmodule PlannerWeb.TasksLive do
 
   def handle_event("delete-task", %{"task-id" => task_id}, socket) do
     {_, task} = Tasks.delete_task_by_id!(task_id)
-    {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" deleted")}
+    socket = refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" deleted")
+    route = get_index_route(socket)
+
+    {:noreply, push_patch(socket, to: route)}
   end
 
   def handle_event("new-task", %{"task" => task_params}, socket) do
@@ -222,5 +223,12 @@ defmodule PlannerWeb.TasksLive do
     |> assign(:route_show_task, &Routes.tasks_path(&1, :show_task, &2))
     |> assign(:route_edit_task, &Routes.tasks_path(&1, :edit_task, &2))
     |> assign(:route_index_tasks, &Routes.tasks_path(&1, :index))
+  end
+
+  defp get_index_route(socket) do
+    case socket.assigns.active_plan do
+      nil -> Routes.tasks_path(socket, :index)
+      plan -> Routes.tasks_path(socket, :show_plan, plan.id)
+    end
   end
 end
