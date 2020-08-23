@@ -4,11 +4,7 @@ defmodule PlannerWeb.TasksLive do
   alias Planner.Tasks
 
   def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:plans, Tasks.list_unfinished_plans())
-
-    {:ok, socket}
+   {:ok, assign(socket, :plans, Tasks.list_unfinished_plans())}
   end
 
   # plan: yes, task: yes
@@ -121,9 +117,15 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_event("keydown", _params, socket) do
+    route =
+      case socket.assigns.active_plan do
+        nil -> Routes.tasks_path(socket, :index)
+        plan -> Routes.tasks_path(socket, :show_plan, plan.id)
+      end
+
     case socket.assigns.live_action do
       :index -> {:noreply, socket}
-      _ -> {:noreply, push_patch(socket, to: Routes.tasks_path(socket, :index))}
+      _ -> {:noreply, push_patch(socket, to: route)}
     end
   end
 

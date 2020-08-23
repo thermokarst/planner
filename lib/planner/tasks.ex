@@ -25,7 +25,7 @@ defmodule Planner.Tasks do
         t in Task,
         join: pd in PlanDetail,
         on: t.id == pd.task_id,
-        where: pd.plan_id == ^plan_id,
+        where: pd.plan_id == ^plan_id and is_nil(t.finished_at),
         order_by: [desc: t.updated_at]
       )
 
