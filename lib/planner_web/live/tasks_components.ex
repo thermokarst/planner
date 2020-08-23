@@ -21,7 +21,7 @@ defmodule TasksComponent do
     ~L"""
     <div class="content">
       <%= f = form_for(@changeset, "#", [phx_submit: "new-task"]) %>
-        <div class="field">
+        <div id="adder" class="field">
           <div class="control">
             <%= text_input(f,
               :value,
@@ -32,6 +32,17 @@ defmodule TasksComponent do
           <%= error_tag(f, :value) %>
         </div>
       </form>
+
+      <%= if(!is_nil(@active_plan)) do %>
+        <div
+          id="deleter"
+          phx-hook="DeleteDropper"
+          data-drop="<%= @active_plan.id %>"
+          class="has-background-danger"
+          style="height: 38px; width: 100%"
+          hidden=true
+        ></div>
+      <% end %>
 
       <ul class="tasks">
         <%= for task <- @tasks do %>
@@ -73,7 +84,7 @@ defmodule TaskComponent do
         <div class="ml-5-5">
           <%= if(@is_active) do %>
             <%= case @live_action do %>
-              <% :show -> %>
+              <% :show_task -> %>
                 <%= live_component(@socket,
                   TaskDetailsComponent,
                   id: "task_details:#{@task.id}",
@@ -81,7 +92,7 @@ defmodule TaskComponent do
                   route_index_tasks: @route_index_tasks,
                   route_edit_task: @route_edit_task
                 )%>
-              <% :edit -> %>
+              <% :edit_task -> %>
                  <%= live_component(@socket,
                   TaskEditComponent,
                   id: "task_edit:#{@task.id}",
@@ -92,7 +103,7 @@ defmodule TaskComponent do
             <%= live_patch(to: @route_show_task.(@socket, @task.id),
               style: "display: block;"
             ) do %>
-              <div class="value ">
+              <div class="value">
                 <%= md_to_html(@task.value) %>
               </div>
             <% end %>
@@ -116,7 +127,7 @@ defmodule TaskDetailsComponent do
 
   def render(assigns) do
     ~L"""
-    <div class="box">
+    <div class="box" id="task-details-<%= @task.id %>" draggable="true" phx-hook="Dragger" data-task-id="<%= @task.id %>">
       <%= live_patch("",
         to: @route_index_tasks.(@socket),
         class: "delete is-pulled-right"

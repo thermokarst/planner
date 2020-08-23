@@ -53,8 +53,12 @@ defmodule PlannerWeb.Router do
     pipe_through([:browser, :require_authenticated_user])
 
     live("/", TasksLive, :index)
-    live("/:task_id", TasksLive, :show)
-    live("/:task_id/edit", TasksLive, :edit)
+    live("/tasks", TasksLive, :index)
+    live("/tasks/:task_id", TasksLive, :show_task)
+    live("/tasks/:task_id/edit", TasksLive, :edit_task)
+    live("/plans/:plan_id/tasks", TasksLive, :show_plan)
+    live("/plans/:plan_id/tasks/:task_id", TasksLive, :show_task)
+    live("/plans/:plan_id/tasks/:task_id/edit", TasksLive, :edit_task)
 
     get("/users/settings", UserSettingsController, :edit)
     put("/users/settings/update_password", UserSettingsController, :update_password)
