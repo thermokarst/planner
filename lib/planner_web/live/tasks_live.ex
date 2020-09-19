@@ -128,6 +128,7 @@ defmodule PlannerWeb.TasksLive do
             id: :tasks,
             live_action: @live_action,
             tasks: @tasks,
+            plans: @plans,
             active_plan: @active_plan,
             active_task: @active_task,
             route_show_task: @route_show_task,
@@ -168,11 +169,11 @@ defmodule PlannerWeb.TasksLive do
     task = Tasks.get_task!(task_params["id"])
 
     case Tasks.update_task(task, task_params) do
-      {:ok, task} ->
+      {:ok, changes} ->
         # I suspect splicing in the updated task isn't much faster than just refreshing the whole list
         socket =
           socket
-          |> refresh_tasks_and_flash_msg("task \"#{task.value}\" updated")
+          |> refresh_tasks_and_flash_msg("task \"#{changes.task.value}\" updated")
 
         route = get_index_route(socket)
 

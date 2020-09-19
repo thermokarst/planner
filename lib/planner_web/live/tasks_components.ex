@@ -50,6 +50,7 @@ defmodule TasksComponent do
             TaskComponent,
             id: "task:#{task.id}",
             task: task,
+            plans: @plans,
             live_action: @live_action,
             is_active: @active_task == task.id,
             route_show_task: @route_show_task,
@@ -96,7 +97,8 @@ defmodule TaskComponent do
                  <%= live_component(@socket,
                   TaskEditComponent,
                   id: "task_edit:#{@task.id}",
-                  task: @task
+                  task: @task,
+                  plans: @plans
                 )%>
               <% end %>
           <% else %>
@@ -225,8 +227,23 @@ defmodule TaskEditComponent do
           <%= error_tag(f, :due_at) %>
         </div>
 
-        <div class="control">
-          <%= submit("save", class: "button is-dark is-small") %>
+        <div class="field">
+          <label class="label">plans</label>
+          <div class="control">
+            <div class="select is-multiple is-dark">
+            <%= multiple_select(f,
+              :plans,
+              Enum.map(@plans, &({&1.name, &1.id})),
+              selected: Enum.map(@task.plans, &(&1.id))
+            ) %>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <%= submit("save", class: "button is-dark is-small") %>
+          </div>
         </div>
       </form>
     </div>

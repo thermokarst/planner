@@ -17,6 +17,7 @@ defmodule Planner.Tasks do
       order_by: [desc: t.updated_at]
     )
     |> Repo.all()
+    |> Repo.preload(:plans)
   end
 
   def list_unfinished_tasks_by_plan_id(plan_id) do
@@ -40,6 +41,7 @@ defmodule Planner.Tasks do
       order_by: [desc: t.updated_at]
     )
     |> Repo.all()
+    |> Repo.preload(:plans)
   end
 
   def get_task!(id), do: Repo.get!(Task, id)
@@ -60,9 +62,33 @@ defmodule Planner.Tasks do
   end
 
   def update_task(%Task{} = task, attrs) do
-    task
-    |> Task.changeset(attrs)
-    |> Repo.update()
+    new_plan_details_changesets = Enum.map(attrs["plans"], fn(plan_id) ->
+      PlanDetail.changeset(%PlanDetail{}, %{"task_id" => task.id, "plan_id" => plan_id})
+    end)
+
+    deleted_plan_details =
+      Ecto.Query.from(
+        pd in PlanDetail,
+        where: pd.task_id == ^task.id and pd.plan_id not in ^attrs["plans"]
+      )
+
+    multi =
+      Enum.reduce(
+       new_plan_details_changesets,
+        Multi.new()
+        |> Multi.update(:task, Task.changeset(task, attrs))
+        |> Multi.delete_all(:deleted_plan_details, deleted_plan_details),
+        fn(changeset, new_multi) ->
+          Multi.insert(
+            new_multi,
+            changeset.params["plan_id"],
+            changeset,
+            on_conflict: :nothing
+          )
+        end
+      )
+
+    Repo.transaction(multi)
   end
 
   def delete_task_by_id!(id) do
