@@ -229,7 +229,7 @@ defmodule PlannerWeb.TasksLive do
     |> put_flash(:info, msg)
   end
 
-  defp add_new_task(task_params, active_plan = nil, socket) do
+  defp add_new_task(task_params, _active_plan = nil, socket) do
     case Tasks.create_task(task_params) do
       {:ok, task} ->
         {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" created")}
