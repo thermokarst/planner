@@ -1,9 +1,0 @@
-<%= link "new", to: Routes.task_path(@conn, :new), class: "button is-dark" %>
-
-<div class="content">
-  <ul class="tasks">
-    <%= for task <- @tasks do %>
-      <li><%= render "task.html", Map.put(assigns, :task, task) %></li>
-    <% end %>
-  </ul>
-</div>

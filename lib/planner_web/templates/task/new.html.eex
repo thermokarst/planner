@@ -1,1 +1,0 @@
-<%= render "form.html", Map.put(assigns, :action, Routes.task_path(@conn, :create)) %>
