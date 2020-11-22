@@ -179,7 +179,7 @@ defmodule PlannerWeb.TasksLive do
 
         {:noreply, push_patch(socket, to: route)}
 
-      {:error, changeset} ->
+      {:error, _, changeset, _} ->
         send_update(TaskEditComponent, id: "task_edit:#{task.id}", changeset: changeset)
         {:noreply, socket}
     end
