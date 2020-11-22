@@ -100,6 +100,7 @@ defmodule PlannerWeb.TasksLive do
                 plan.name,
                 to: Routes.tasks_path(@socket, :show_plan, plan.id),
                 class: "panel-block",
+                style: "word-break: break-all;",
                 phx_hook: "AddDropper",
                 data_plan_id: plan.id
               ) %>
