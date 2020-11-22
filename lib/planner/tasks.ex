@@ -10,6 +10,18 @@ defmodule Planner.Tasks do
 
   def list_all_tasks, do: Repo.all(Task)
 
+  def list_unfiled_tasks do
+    filed_ids = from(pd in PlanDetail, select: pd.task_id)
+
+    from(
+      t in Task,
+      where: is_nil(t.finished_at) and t.id not in subquery(filed_ids),
+      order_by: [desc: t.updated_at]
+    )
+    |> Repo.all()
+    |> Repo.preload(:plans)
+  end
+
   def list_unfinished_tasks do
     from(
       t in Task,

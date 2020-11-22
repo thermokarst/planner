@@ -38,7 +38,7 @@ defmodule PlannerWeb.TasksLive do
           socket
           |> assign(:active_task, task_id)
           |> assign(:active_plan, nil)
-          |> assign(:tasks, Tasks.list_unfinished_tasks())
+          |> assign(:tasks, Tasks.list_unfiled_tasks())
           |> add_task_routes()
 
         {:noreply, assign(socket, :active_task, task_id)}
@@ -72,7 +72,7 @@ defmodule PlannerWeb.TasksLive do
       socket
       |> assign(:active_task, nil)
       |> assign(:active_plan, nil)
-      |> assign(:tasks, Tasks.list_unfinished_tasks())
+      |> assign(:tasks, Tasks.list_unfiled_tasks())
       |> add_task_routes()
 
     {:noreply, socket}
@@ -94,7 +94,7 @@ defmodule PlannerWeb.TasksLive do
                 <%= error_tag(f, :name) %>
               </div>
             </form>
-            <%= live_patch("all unfinished tasks", to: Routes.tasks_path(@socket, :index), class: "panel-block") %>
+            <%= live_patch("unfiled", to: Routes.tasks_path(@socket, :index), class: "panel-block") %>
             <%= for plan <- @plans do %>
               <%= live_patch(
                 plan.name,
@@ -109,7 +109,7 @@ defmodule PlannerWeb.TasksLive do
       <div class="column">
         <%= case @active_plan do %>
           <%= nil -> %>
-            <h4 class="title is-4">all unfinished tasks</h4>
+            <h4 class="title is-4">unfiled</h4>
          <% _ -> %>
             <h4 class="title is-4">
               <button
@@ -220,7 +220,7 @@ defmodule PlannerWeb.TasksLive do
   defp refresh_tasks_and_flash_msg(socket, msg) do
     tasks =
       case socket.assigns.active_plan do
-        nil -> Tasks.list_unfinished_tasks()
+        nil -> Tasks.list_unfiled_tasks()
         plan -> Tasks.list_unfinished_tasks_by_plan_id(plan.id)
       end
 

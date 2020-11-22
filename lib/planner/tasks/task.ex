@@ -6,7 +6,6 @@ defmodule Planner.Tasks.Task do
   @foreign_key_type :binary_id
   schema "tasks" do
     field(:value, :string)
-    field(:filed_at, :naive_datetime)
     field(:finished_at, :naive_datetime)
     field(:due_at, :naive_datetime)
 
@@ -17,7 +16,7 @@ defmodule Planner.Tasks.Task do
 
   def changeset(task, attrs) do
     task
-    |> cast(attrs, [:value, :filed_at, :finished_at, :due_at])
+    |> cast(attrs, [:value, :finished_at, :due_at])
     |> validate_required([:value])
     |> validate_length(:value, min: 3)
   end
