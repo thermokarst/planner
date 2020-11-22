@@ -5,18 +5,15 @@ defmodule Planner.Tasks.Plan do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "plans" do
-    field :description, :string
     field :finished_at, :naive_datetime
-    field :end, :naive_datetime
     field :name, :string
-    field :start, :naive_datetime
 
     timestamps()
   end
 
   def changeset(plan, attrs) do
     plan
-    |> cast(attrs, [:description, :finished_at, :start, :end, :name])
+    |> cast(attrs, [:name, :finished_at])
     |> validate_required([:name])
     |> update_change(:name, &String.trim/1)
   end
