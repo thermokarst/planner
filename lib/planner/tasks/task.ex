@@ -26,5 +26,9 @@ defmodule Planner.Tasks.Task do
     change(task, finished_at: now())
   end
 
+  def preview(task) do
+    hd(String.split(task.value, "\n"))
+  end
+
   defp now(), do: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 end

@@ -67,6 +67,8 @@ end
 defmodule TaskComponent do
   use Phoenix.LiveComponent
 
+  alias Planner.Tasks.Task
+
   import PlannerWeb.Util
 
   def render(assigns) do
@@ -111,7 +113,7 @@ defmodule TaskComponent do
               style: "display: block;"
             ) do %>
               <div class="value">
-                <%= md_to_html(@task.value) %>
+                <%= md_to_html(Task.preview(@task)) %>
               </div>
             <% end %>
             <%= if(not is_nil(@task.due_at)) do %>
