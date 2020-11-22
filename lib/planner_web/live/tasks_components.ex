@@ -74,13 +74,18 @@ defmodule TaskComponent do
     <li>
       <div>
         <div class="is-pulled-left">
-          <button
-            type="button"
-            role="checkbox"
-            class="doit"
-            phx-click="finish-task"
-            phx-value-task-id="<%= @task.id %>">
-          </button>
+          <%= case @task.finished_at do %>
+            <% nil -> %>
+              <button
+                type="button"
+                role="checkbox"
+                class="doit"
+                phx-click="finish-task"
+                phx-value-task-id="<%= @task.id %>">
+              </button>
+            <% _ -> %>
+              !
+            <% end %>
         </div>
         <div class="ml-5-5">
           <%= if(@is_active) do %>
@@ -134,11 +139,15 @@ defmodule TaskDetailsComponent do
         to: @route_index_tasks.(@socket),
         class: "delete is-pulled-right"
       ) %>
-      <%= if(not is_nil(@task.due_at) or length(@task.plans) == 0) do %>
+      <%= if(not is_nil(@task.due_at) or not is_nil(@task.finished_at) or length(@task.plans) == 0) do %>
         <div class="tags">
           <%= if(not is_nil(@task.due_at)) do %>
             <span class="tag is-warning">
               due: <%= @task.due_at %>
+            </span><% end %>
+          <%= if(not is_nil(@task.finished_at)) do %>
+            <span class="tag is-success">
+              completed
             </span><% end %>
           <%= if(length(@task.plans) == 0) do %>
             <span class="tag is-danger">

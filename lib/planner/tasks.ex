@@ -32,13 +32,13 @@ defmodule Planner.Tasks do
     |> Repo.preload(:plans)
   end
 
-  def list_unfinished_tasks_by_plan_id(plan_id) do
+  def list_unfinished_tasks_by_plan_id(plan_id, task_id \\ nil) do
     q =
       Ecto.Query.from(
         t in Task,
         join: pd in PlanDetail,
         on: t.id == pd.task_id,
-        where: pd.plan_id == ^plan_id and is_nil(t.finished_at),
+        where: (pd.plan_id == ^plan_id and is_nil(t.finished_at)) or t.id == ^task_id,
         order_by: [desc: t.updated_at]
       )
 
