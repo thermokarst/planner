@@ -74,14 +74,16 @@ defmodule Planner.Tasks do
   end
 
   def update_task(%Task{} = task, attrs) do
-    new_plan_details_changesets = Enum.map(attrs["plans"], fn(plan_id) ->
+    plans = Map.get(attrs, "plans", [])
+
+    new_plan_details_changesets = Enum.map(plans, fn(plan_id) ->
       PlanDetail.changeset(%PlanDetail{}, %{"task_id" => task.id, "plan_id" => plan_id})
     end)
 
     deleted_plan_details =
       Ecto.Query.from(
         pd in PlanDetail,
-        where: pd.task_id == ^task.id and pd.plan_id not in ^attrs["plans"]
+        where: pd.task_id == ^task.id and pd.plan_id not in ^plans
       )
 
     multi =
