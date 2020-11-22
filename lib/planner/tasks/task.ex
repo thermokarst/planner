@@ -18,7 +18,7 @@ defmodule Planner.Tasks.Task do
     task
     |> cast(attrs, [:value, :finished_at, :due_at])
     |> validate_required([:value])
-    |> validate_length(:value, min: 3)
+    |> update_change(:value, &String.trim/1)
   end
 
   def finish_task(task) do
