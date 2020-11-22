@@ -140,7 +140,7 @@ defmodule TaskDetailsComponent do
             <span class="tag is-warning">
               due: <%= @task.due_at %>
             </span><% end %>
-          <%= if(is_nil(@task.filed_at)) do %>
+          <%= if(length(@task.plans) == 0) do %>
             <span class="tag is-danger">
               unfiled
             </span>
