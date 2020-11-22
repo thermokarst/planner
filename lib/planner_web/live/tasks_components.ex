@@ -207,13 +207,13 @@ defmodule TaskEditComponent do
 
         <div class="field">
           <%= label(f, :due_at, class: "label") do %>
-            due (YYYY-MM-DD HH:MM:SS)
+            due (YYYY-MM-DD HH:MM)
           <% end %>
           <div class="control">
             <%= text_input(f,
               :due_at,
               class: "input",
-              placeholder: "YYYY-MM-DD HH:MM:SS",
+              placeholder: "YYYY-MM-DD HH:MM",
               autocomplete: "off"
             ) %>
           </div>
