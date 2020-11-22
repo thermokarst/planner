@@ -20,7 +20,7 @@ defmodule PlannerWeb.TasksLive do
           socket
           |> assign(:active_task, task_id)
           |> assign(:active_plan, Tasks.get_plan!(plan_id))
-          |> assign(:tasks, Tasks.list_unfinished_tasks_by_plan_id(plan_id))
+          |> assign(:tasks, Tasks.list_unfinished_tasks_by_plan_id(plan_id, task_id))
           |> add_plan_routes(plan_id)
 
         {:noreply, socket}
@@ -188,7 +188,8 @@ defmodule PlannerWeb.TasksLive do
 
   def handle_event("finish-task", %{"task-id" => task_id}, socket) do
     {_, task} = Tasks.finish_task_by_id!(task_id)
-    {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" completed")}
+    route = get_index_route(socket)
+    {:noreply, push_patch(socket, to: route)}
   end
 
   def handle_event("new-task", %{"task" => task_params}, socket) do
