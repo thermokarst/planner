@@ -18,6 +18,7 @@ defmodule Planner.Tasks.Plan do
     plan
     |> cast(attrs, [:description, :finished_at, :start, :end, :name])
     |> validate_required([:name])
+    |> update_change(:name, &String.trim/1)
   end
 
   def finish_plan(plan) do
