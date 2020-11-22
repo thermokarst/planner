@@ -134,7 +134,7 @@ defmodule TaskDetailsComponent do
         to: @route_index_tasks.(@socket),
         class: "delete is-pulled-right"
       ) %>
-      <%= if(not is_nil(@task.due_at) or is_nil(@task.filed_at)) do %>
+      <%= if(not is_nil(@task.due_at) or length(@task.plans) == 0) do %>
         <div class="tags">
           <%= if(not is_nil(@task.due_at)) do %>
             <span class="tag is-warning">
