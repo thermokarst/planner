@@ -190,14 +190,6 @@ defmodule PlannerWeb.TasksLive do
     {:noreply, refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" completed")}
   end
 
-  def handle_event("delete-task", %{"task-id" => task_id}, socket) do
-    {_, task} = Tasks.delete_task_by_id!(task_id)
-    socket = refresh_tasks_and_flash_msg(socket, "task \"#{task.value}\" deleted")
-    route = get_index_route(socket)
-
-    {:noreply, push_patch(socket, to: route)}
-  end
-
   def handle_event("new-task", %{"task" => task_params}, socket) do
     add_new_task(task_params, socket.assigns.active_plan, socket)
   end
