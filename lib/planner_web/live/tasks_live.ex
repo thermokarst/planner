@@ -187,7 +187,7 @@ defmodule PlannerWeb.TasksLive do
   end
 
   def handle_event("finish-task", %{"task-id" => task_id}, socket) do
-    {_, task} = Tasks.finish_task_by_id!(task_id)
+    {_, _} = Tasks.finish_task_by_id!(task_id)
     route = get_index_route(socket)
     {:noreply, push_patch(socket, to: route)}
   end
