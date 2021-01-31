@@ -194,6 +194,12 @@ defmodule PlannerWeb.TasksLive do
     {:noreply, push_patch(socket, to: route)}
   end
 
+  def handle_event("unfinish-task", %{"task-id" => task_id}, socket) do
+    {_, _} = Tasks.unfinish_task_by_id!(task_id)
+    route = get_index_route(socket)
+    {:noreply, push_patch(socket, to: route)}
+  end
+
   def handle_event("new-task", %{"task" => task_params}, socket) do
     add_new_task(task_params, socket.assigns.active_plan, socket)
   end

@@ -160,6 +160,12 @@ defmodule Planner.Tasks do
     |> Repo.update()
   end
 
+  def unfinish_task_by_id!(id) do
+    get_task!(id)
+    |> Task.unfinish_task()
+    |> Repo.update()
+  end
+
   def verify_task_id_from_url(task_id) do
     task_id =
       case UUID.dump(task_id) do

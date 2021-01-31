@@ -86,7 +86,11 @@ defmodule TaskComponent do
                 phx-value-task-id="<%= @task.id %>">
               </button>
             <% _ -> %>
-              !
+              <span
+                class="pointer"
+                phx-click="unfinish-task" phx-value-task-id="<%= @task.id %>">
+                !
+              </span>
             <% end %>
         </div>
         <div class="ml-5-5">

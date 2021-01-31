@@ -26,6 +26,10 @@ defmodule Planner.Tasks.Task do
     change(task, finished_at: now())
   end
 
+  def unfinish_task(task) do
+    change(task, finished_at: nil)
+  end
+
   def preview(task) do
     hd(String.split(task.value, "\n"))
   end
