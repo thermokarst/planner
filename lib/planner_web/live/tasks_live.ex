@@ -4,23 +4,25 @@ defmodule PlannerWeb.TasksLive do
   alias Planner.Tasks
   alias Planner.Tasks.Plan
 
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
+    done = Map.get(params, "done", "default_value")
     socket =
-    socket
-    |> assign(:plans, Tasks.list_unfinished_plans())
-    |> assign(:plan_changeset, Tasks.change_plan(%Plan{}))
+      socket
+      |> assign(:plans, Tasks.list_unfinished_plans())
+      |> assign(:plan_changeset, Tasks.change_plan(%Plan{}))
+      |> assign(:include_done, done)
    {:ok, socket}
   end
 
   # plan: yes, task: yes
-  def handle_params(%{"plan_id" => plan_id, "task_id" => task_id}, _, socket) do
+  def handle_params(%{"plan_id" => plan_id, "task_id" => task_id} = params, _, socket) do
     case Tasks.verify_plan_id_from_url(plan_id) and Tasks.verify_task_id_from_url(task_id) do
       true ->
         socket =
           socket
           |> assign(:active_task, task_id)
           |> assign(:active_plan, Tasks.get_plan!(plan_id))
-          |> assign(:tasks, Tasks.list_unfinished_tasks_by_plan_id(plan_id, task_id))
+          |> assign(:tasks, Tasks.list_tasks_by_plan_id(socket.assigns.include_done, plan_id, task_id))
           |> add_plan_routes(plan_id)
 
         {:noreply, socket}
@@ -31,14 +33,14 @@ defmodule PlannerWeb.TasksLive do
   end
 
   # plan: no, task: yes
-  def handle_params(%{"task_id" => task_id}, _, socket) do
+  def handle_params(%{"task_id" => task_id} = params, _, socket) do
     case Tasks.verify_task_id_from_url(task_id) do
       true ->
         socket =
           socket
           |> assign(:active_task, task_id)
           |> assign(:active_plan, nil)
-          |> assign(:tasks, Tasks.list_unfiled_tasks())
+          |> assign(:tasks, Tasks.list_unfiled_tasks(socket.assigns.include_done))
           |> add_task_routes()
 
         {:noreply, assign(socket, :active_task, task_id)}
@@ -49,14 +51,14 @@ defmodule PlannerWeb.TasksLive do
   end
 
   # plan: yes, task: no
-  def handle_params(%{"plan_id" => plan_id}, _, socket) do
+  def handle_params(%{"plan_id" => plan_id} = params, _, socket) do
     case Tasks.verify_plan_id_from_url(plan_id) do
       true ->
         socket =
           socket
           |> assign(:active_task, nil)
           |> assign(:active_plan, Tasks.get_plan!(plan_id))
-          |> assign(:tasks, Tasks.list_unfinished_tasks_by_plan_id(plan_id))
+          |> assign(:tasks, Tasks.list_tasks_by_plan_id(socket.assigns.include_done, plan_id, nil))
           |> add_plan_routes(plan_id)
 
         {:noreply, socket}
@@ -67,12 +69,12 @@ defmodule PlannerWeb.TasksLive do
   end
 
   # plan: no, task: no
-  def handle_params(_, _, socket) do
+  def handle_params(params, _, socket) do
     socket =
       socket
       |> assign(:active_task, nil)
       |> assign(:active_plan, nil)
-      |> assign(:tasks, Tasks.list_unfiled_tasks())
+      |> assign(:tasks, Tasks.list_unfiled_tasks(socket.assigns.include_done))
       |> add_task_routes()
 
     {:noreply, socket}
@@ -108,6 +110,7 @@ defmodule PlannerWeb.TasksLive do
           </nav>
       </div>
       <div class="column">
+        <span>debug done: <%= @include_done %></span>
         <%= case @active_plan do %>
           <%= nil -> %>
             <h4 class="title is-4">unfiled</h4>
@@ -214,8 +217,8 @@ defmodule PlannerWeb.TasksLive do
   defp refresh_tasks_and_flash_msg(socket, msg) do
     tasks =
       case socket.assigns.active_plan do
-        nil -> Tasks.list_unfiled_tasks()
-        plan -> Tasks.list_unfinished_tasks_by_plan_id(plan.id)
+        nil -> Tasks.list_unfiled_tasks(socket.assigns.include_done)
+        plan -> Tasks.list_tasks_by_plan_id(socket.assigns.include_done, plan.id, nil)
       end
 
     socket

@@ -8,9 +8,19 @@ defmodule Planner.Tasks do
   alias Planner.Tasks.Plan
   alias Planner.Tasks.PlanDetail
 
-  def list_all_tasks, do: Repo.all(Task)
+  def list_unfiled_tasks("true") do
+    filed_ids = from(pd in PlanDetail, select: pd.task_id)
 
-  def list_unfiled_tasks do
+    from(
+      t in Task,
+      where: t.id not in subquery(filed_ids),
+      order_by: [desc: t.updated_at]
+    )
+    |> Repo.all()
+    |> Repo.preload(:plans)
+  end
+
+  def list_unfiled_tasks(_done) do
     filed_ids = from(pd in PlanDetail, select: pd.task_id)
 
     from(
@@ -22,7 +32,16 @@ defmodule Planner.Tasks do
     |> Repo.preload(:plans)
   end
 
-  def list_unfinished_tasks do
+  def list_unfinished_tasks("true") do
+    from(
+      t in Task,
+      order_by: [desc: t.updated_at]
+    )
+    |> Repo.all()
+    |> Repo.preload(:plans)
+  end
+
+  def list_unfinished_tasks(_done) do
     from(
       t in Task,
       where: is_nil(t.finished_at),
@@ -32,7 +51,23 @@ defmodule Planner.Tasks do
     |> Repo.preload(:plans)
   end
 
-  def list_unfinished_tasks_by_plan_id(plan_id, task_id \\ nil) do
+  def list_tasks_by_plan_id("true", plan_id, task_id) do
+    q =
+      Ecto.Query.from(
+        t in Task,
+        join: pd in PlanDetail,
+        on: t.id == pd.task_id,
+        where: (pd.plan_id == ^plan_id)
+                or
+               (pd.plan_id == ^plan_id and t.id == ^task_id),
+        order_by: [desc: t.updated_at]
+      )
+
+    Repo.all(q)
+    |> Repo.preload(:plans)
+  end
+
+  def list_tasks_by_plan_id(_done, plan_id, task_id) do
     q =
       Ecto.Query.from(
         t in Task,
