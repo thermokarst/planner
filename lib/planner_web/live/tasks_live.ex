@@ -110,7 +110,6 @@ defmodule PlannerWeb.TasksLive do
           </nav>
       </div>
       <div class="column">
-        <span>debug done: <%= @include_done %></span>
         <%= case @active_plan do %>
           <%= nil -> %>
             <h4 class="title is-4">unfiled</h4>
