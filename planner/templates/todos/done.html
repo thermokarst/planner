@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<table>
+  <tbody>
+  {% for todo in todos %}
+    <tr>
+      <td>{{ todo.title }}</td>
+      {% if todo.body %}
+      <td class="fit">[...]</td>
+      {% endif %}
+      <td class="fit">
+        <a href="{% url 'todos:mark_as_undone' todo.slug %}">u</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td>no done todos</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+
+<div>
+  <form method="post" style="display: flex; flex-direction: column">
+    {% csrf_token %}
+    {{ form }}
+    <div>
+      <input type="submit" value="create">
+    </div>
+  </form>
+</div>
+
+<h3>plan: <code>{{ plan.slug }}</code> | {{ plan.name }}</h3>
+
+<table>
+  <tbody>
+  {% for todo in todos %}
+    <tr>
+      <td>{{ todo.title }}</td>
+      <td class="fit">
+        <a href="{% url 'todos:detail' todo.slug %}">
+          <code>{{ todo.slug }}</code>
+        </a>
+      </td>
+      <td class="fit">
+        <a href="{% url 'todos:edit' todo.slug %}">e</a>
+      </td>
+      <td class="fit">
+        <a href="{% url 'plans:mark_todo_as_done' slug=plan.slug todo_slug=todo.slug %}">d</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td>no todos</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<p><small>updated: {{ plan.updated_at }} | created:{{ plan.created_at }}</small></p>
+{% endblock %}

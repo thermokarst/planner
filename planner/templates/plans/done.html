@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<table>
+  <tbody>
+  {% for plan in plans %}
+    <tr>
+      <td>{{ plan.name }}</td>
+      <td class="fit">
+        <a href="{% url 'plans:mark_as_undone' plan.slug %}">u</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td>no done plans</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

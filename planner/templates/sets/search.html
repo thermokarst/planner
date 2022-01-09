@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<table>
+  <tbody>
+  {% for link in links %}
+    <tr>
+      <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+      <td class="fit"><code>{{ link.slug }}</code></td>
+    </tr>
+  {% empty %}
+    <tr><td>no links</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h3>set: <code>{{ set.slug }}</code> | {{ set.name }}</h3>
+
+<pre>
+'               link-only quickfind
+ctrl+g          fwd search
+shift+ctrl+g    rev search
+enter           open link
+ctrl+l          focus url bar
+</pre>
+{% endblock %}

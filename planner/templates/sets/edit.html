@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<div>
+  <form method="post" style="display: flex; flex-direction: column">
+    {% csrf_token %}
+    {{ form }}
+    <div>
+      <input type="submit" value="update">
+    </div>
+  </form>
+</div>
+{% endblock %}

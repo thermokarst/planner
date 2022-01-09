@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<table>
+  <tbody>
+  {% for set in sets %}
+    <tr>
+      <td>{{ set.name }}</td>
+      <td class="fit">
+        <a href="{% url 'sets:mark_as_undone' set.slug %}">u</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td>no done sets</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

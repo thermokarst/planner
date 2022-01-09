@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<div>
+  <form method="post" style="display: flex; flex-direction: column">
+    {% csrf_token %}
+    {{ form }}
+    <div>
+      <input type="submit" value="create">
+    </div>
+  </form>
+</div>
+
+<h3>unfiled links (<a href="{% url 'links:done_list' %}">done</a>)</h3>
+
+<table>
+  <tbody>
+  {% for link in links %}
+    <tr>
+      <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+      <td class="fit">
+        <a href="{% url 'links:detail' link.slug %}">
+          <code>{{ link.slug }}</code>
+        </a>
+      </td>
+      <td class="fit">
+        <a href="{% url 'links:edit' link.slug %}">e</a>
+      </td>
+      <td class="fit">
+        <a href="{% url 'links:mark_as_done' link.slug %}">d</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td>no links</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h3 style="display: flex;">
+  <span style="flex: 1;">sets</span>
+  <span style="flex: 1; text-align: right;">
+    <a href="{% url 'sets:new' %}">new</a> | <a href="{% url 'sets:done_list' %}">done</a>
+  </span>
+</h3>
+<table>
+  <tbody>
+  {% for set in sets %}
+    <tr>
+      <td>{{ set.name }}</td>
+      <td class="fit">{{ set.undone_count }}</td>
+      <td class="fit">
+        <a href="{% url 'sets:detail' set.slug %}">
+          <code>{{ set.slug }}</code>
+        </a>
+      </td>
+      <td class="fit">
+        <a href="{% url 'sets:edit' set.slug %}">e</a>
+      </td>
+      <td class="fit">
+        <a href="{% url 'sets:mark_as_done' set.slug %}">d</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td>no sets</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

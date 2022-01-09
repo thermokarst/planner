@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<h3>todo: <code>{{ todo.slug }}</code> | {{ todo.title }}</h3>
+
+{% if todo.body %}
+<pre>{{ todo.body }}</pre>
+{% endif %}
+
+<p><small>updated: {{ todo.updated_at }} | created:{{ todo.created_at }}</small></p>
+{% endblock %}

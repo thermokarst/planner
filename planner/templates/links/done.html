@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<table>
+  <tbody>
+  {% for link in links %}
+    <tr>
+      <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+      <td class="fit">
+        <a href="{% url 'links:mark_as_undone' link.slug %}">u</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td>no done links</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

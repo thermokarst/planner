@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+<h3>link: <code>{{ link.slug }}</code> | <a href="{{ link.url }}">{{ link.url }}</a></h3>
+
+<p><small>updated: {{ link.updated_at }} | created:{{ link.created_at }}</small></p>
+{% endblock %}

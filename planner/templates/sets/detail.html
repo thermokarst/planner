@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block 'content' %}
+
+<div>
+  <form method="post" style="display: flex; flex-direction: column">
+    {% csrf_token %}
+    {{ form }}
+    <div>
+      <input type="submit" value="create">
+    </div>
+  </form>
+</div>
+
+<h3>set: <code>{{ set.slug }}</code> | {{ set.name }}</h3>
+
+<table>
+  <tbody>
+  {% for link in links %}
+    <tr>
+      <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+      <td class="fit">
+        <a href="{% url 'links:detail' link.slug %}">
+          <code>{{ link.slug }}</code>
+        </a>
+      </td>
+      <td class="fit">
+        <a href="{% url 'links:edit' link.slug %}">e</a>
+      </td>
+      <td class="fit">
+        <a href="{% url 'sets:mark_link_as_done' slug=set.slug link_slug=link.slug %}">d</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td>no links</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<p><small><a href="{% url 'sets:search' set.slug %}">search</a> | updated: {{ set.updated_at }} | created:{{ set.created_at }}</small></p>
+{% endblock %}
